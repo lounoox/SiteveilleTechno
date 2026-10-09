@@ -1,0 +1,234 @@
+---
+import Subject from '../layouts/Subject.astro';
+import Cite from '../components/Cite.astro';
+import Exemple from '../components/Exemple.astro';
+import Couches from '../components/interactive/Couches.astro';
+import TroisCouches from '../components/illus/TroisCouches.astro';
+
+const S = [
+  'w3c-about-history',
+  'w3c-process',
+  'mdn-html',
+  'mdn-css',
+  'mdn-js',
+  'w3c-history',
+  'whatwg-faq',
+  'w3c-whatwg-mou',
+  'ietf-intro',
+  'rfc9110',
+  'ecma-262',
+  'mdn-js-intro',
+  'wikipedia-w3c-rec',
+  'w3c-css-history',
+  'wikipedia-css',
+  'w3c-html5-pr',
+  'wikipedia-html5',
+  'wcag22',
+  'cern-birth',
+  'cern-short',
+  'w3c-validator',
+];
+---
+<Subject
+  n={4}
+  description="Les standards du Web : HTML, CSS et JavaScript, qui les écrit (W3C, WHATWG, IETF, Ecma), comment naît un standard et pourquoi ils comptent. Avec une mini-page à allumer couche par couche."
+  lead="Un standard est une règle commune, écrite et publique. Grâce à eux, une page codée une seule fois s’affiche dans tous les navigateurs, sur un ordinateur comme sur un téléphone."
+  sources={S}
+>
+  <div class="definition" slot="definition">
+    <p class="kicker">En une phrase</p>
+    <p>
+      Un <strong>standard du Web</strong> est une spécification technique ouverte, rédigée par un organisme comme le W3C,
+      que tous les navigateurs suivent pour comprendre les pages de la même façon<Cite list={S} ids={['w3c-about-history', 'w3c-process']} />.
+    </p>
+  </div>
+
+  <figure class="figure" slot="illustration">
+    <div class="figure__frame">
+      <TroisCouches />
+    </div>
+    <figcaption>
+      <strong>Une page Web, c’est trois couches.</strong> Chacune a son langage et son standard. Illustration réalisée pour ce
+      site<Cite list={S} ids={['mdn-html', 'mdn-js']} />.
+    </figcaption>
+  </figure>
+
+  <section class="section" aria-labelledby="langages">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Les trois langages</p>
+        <h2 id="langages">Trois langages, trois rôles</h2>
+        <p>Pour la carte du Cornet d’Or, chaque langage fait un travail précis. Aucun ne remplace les autres.</p>
+      </div>
+      <div class="grid-cards">
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">HTML</p>
+          <h3>La structure</h3>
+          <p>
+            Il dit ce qu’est chaque élément : un titre, une liste, un prix, un bouton. C’est le texte de la carte, bien
+            rangé<Cite list={S} ids={['mdn-html', 'w3c-history']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">CSS</p>
+          <h3>L’apparence</h3>
+          <p>
+            Il décide des couleurs, des polices, des marges et de la mise en page, aussi bien sur un écran large que sur un
+            téléphone<Cite list={S} ids={['mdn-css', 'w3c-css-history']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">JS</p>
+          <h3>Le comportement</h3>
+          <p>
+            JavaScript réagit aux actions : un clic ajoute une fricadelle et met le total à jour. Sa version standard s’appelle
+            ECMAScript<Cite list={S} ids={['mdn-js', 'mdn-js-intro']} />.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Démonstration des trois couches">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Démonstration</p>
+        <h2>Voir chaque couche travailler</h2>
+        <p>
+          La mini-page ci-dessous est une vraie page. Commencez avec le HTML seul, puis ajoutez le CSS, puis JavaScript, et
+          cliquez sur les boutons à chaque étape.
+        </p>
+      </div>
+      <Couches />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="qui">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Les organismes</p>
+        <h2 id="qui">Qui écrit les règles ?</h2>
+        <p>Personne ne possède le Web : ses règles sont écrites par des organismes ouverts, avec les fabricants de navigateurs, des entreprises et des experts.</p>
+      </div>
+      <div class="grid-cards">
+        <article class="mini-card reveal">
+          <p class="kicker">Fondé en octobre 1994</p>
+          <h3>W3C</h3>
+          <p>
+            Le World Wide Web Consortium, fondé au MIT par Tim Berners-Lee. Il publie notamment CSS et les règles
+            d’accessibilité WCAG. Depuis janvier 2023, c’est un organisme indépendant d’intérêt public<Cite list={S} ids={['w3c-about-history', 'w3c-history']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="kicker">Fondé en 2004</p>
+          <h3>WHATWG</h3>
+          <p>
+            Créé par des membres d’Apple, de Mozilla et d’Opera. Il tient à jour le <span lang="en">HTML Living Standard</span>.
+            Depuis un accord du 28 mai 2019, HTML est écrit chez lui, puis validé par le W3C<Cite list={S} ids={['whatwg-faq', 'w3c-whatwg-mou']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="kicker">Fondée en 1986</p>
+          <h3>IETF</h3>
+          <p>
+            L’<span lang="en">Internet Engineering Task Force</span> écrit les protocoles d’Internet dans des documents appelés
+            RFC, comme HTTP, TLS ou le DNS<Cite list={S} ids={['ietf-intro', 'rfc9110']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="kicker">Standard ECMA-262</p>
+          <h3>Ecma International</h3>
+          <p>
+            Elle standardise JavaScript sous le nom d’ECMAScript. Sa 17<sup>e</sup> édition, ECMAScript 2026, date de juin
+            2026<Cite list={S} ids={['ecma-262', 'mdn-js-intro']} />.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="naissance">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Le parcours d’un standard</p>
+        <h2 id="naissance">Comment naît un standard au W3C</h2>
+        <p>Un texte passe par plusieurs étapes publiques avant de devenir une « recommandation », le nom officiel d’un standard du W3C<Cite list={S} ids={['w3c-process', 'wikipedia-w3c-rec']} />.</p>
+      </div>
+      <ol class="steps reveal">
+        <li><strong>Premier brouillon public</strong><span>Une première version est publiée pour que tout le monde la lise.</span></li>
+        <li><strong>Brouillon de travail</strong><span>Le groupe améliore le texte, version après version, avec les retours reçus.</span></li>
+        <li><strong>Candidate</strong><span>Le texte est stable : les navigateurs le mettent en œuvre et le testent.</span></li>
+        <li><strong>Proposée</strong><span>Dernière relecture avant la décision finale.</span></li>
+        <li class="is-gold"><strong>Recommandation</strong><span>Le standard officiel, que tout le monde peut appliquer.</span></li>
+      </ol>
+
+      <div class="grid-cards" style="margin-top:1.5rem">
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">1994 → 1996</p>
+          <h3>CSS</h3>
+          <p>
+            Håkon Wium Lie propose les feuilles de style le 10 octobre 1994 et les met au point avec Bert Bos. CSS 1 devient une
+            recommandation du W3C en décembre 1996<Cite list={S} ids={['w3c-css-history', 'wikipedia-css']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">2014</p>
+          <h3>HTML5</h3>
+          <p>
+            La cinquième grande version de HTML devient une recommandation du W3C le 28 octobre 2014. La vidéo et le son
+            s’intègrent alors directement dans la page<Cite list={S} ids={['w3c-html5-pr', 'wikipedia-html5']} />.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="pourquoi">
+    <div class="wrap">
+      <div class="band reveal">
+        <p class="kicker">Pourquoi c’est important</p>
+        <h2 id="pourquoi">Trois raisons de respecter les standards</h2>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat__value">1 code</span>
+            <span class="stat__label">pour tous les navigateurs et tous les appareils, au lieu d’une version par navigateur</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['w3c-about-history', 'mdn-html']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">WCAG</span>
+            <span class="stat__label">Les règles d’accessibilité du W3C (version 2.2) : un site bien codé est utilisable avec un lecteur d’écran</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['wcag22', 'w3c-about-history']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">1990</span>
+            <span class="stat__label">Le premier site, à l’adresse info.cern.ch, se lit encore dans un navigateur d’aujourd’hui</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['cern-birth', 'cern-short']} /></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Exemple du fil rouge">
+    <div class="wrap">
+      <Exemple title="Une carte lisible partout">
+        <p>
+          La carte en ligne du Cornet d’Or est écrite en HTML valide, mise en forme en CSS et rendue interactive en
+          JavaScript. Résultat : elle s’affiche de la même façon dans Chrome, Firefox, Safari ou Edge, sur un téléphone comme
+          sur un ordinateur.
+        </p>
+        <p>
+          Avant la mise en ligne, la friterie passe sa page dans le <a href="https://validator.w3.org/">validateur du W3C</a>,
+          un outil gratuit qui signale les erreurs de code<Cite list={S} ids={['w3c-validator', 'w3c-about-history']} />.
+          Le HTML de ce site-ci a été vérifié de la même manière : aucune erreur.
+        </p>
+      </Exemple>
+    </div>
+  </section>
+
+  <ol slot="retenir">
+    <li>HTML donne la structure, CSS l’apparence, JavaScript le comportement.</li>
+    <li>Les règles sont écrites par des organismes ouverts : W3C, WHATWG, IETF et Ecma International.</li>
+    <li>Respecter les standards, c’est un seul code pour tous les navigateurs, un site accessible et durable.</li>
+  </ol>
+</Subject>

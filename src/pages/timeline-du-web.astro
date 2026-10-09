@@ -1,0 +1,219 @@
+---
+import Subject from '../layouts/Subject.astro';
+import Cite from '../components/Cite.astro';
+import Exemple from '../components/Exemple.astro';
+import Frise from '../components/interactive/Frise.astro';
+import QuizAnnee from '../components/interactive/QuizAnnee.astro';
+import PremierServeur from '../components/illus/PremierServeur.astro';
+
+const S = [
+  'cern-short',
+  'cern-birth',
+  'isoc-brief',
+  'chm-1980s',
+  'chm-1960s',
+  'webfoundation-history',
+  'britishcouncil-history',
+  'w3c-history',
+  'raytheon-tomlinson',
+  'npr-tomlinson',
+  'cern-timeline-1993',
+  'w3c-about-history',
+  'oreilly-js',
+  'wikipedia-js',
+  'w3c-html5-pr',
+  'wikipedia-html5',
+  'statcounter-2016',
+  'ctv-2016',
+  'eurlex-rgpd',
+  'inami-rgpd',
+  'chcomputing-chatgpt',
+  'pressecitron-chatgpt',
+  'verisign-q2-2026',
+  'dnib-q2-2026',
+  'focus-cailliau',
+  'wikipedia-cailliau',
+];
+---
+<Subject
+  n={1}
+  description="Internet et le Web, ce n'est pas pareil. Seize dates clés de 1969 à 2026 sur une frise interactive, avec un quiz pour tester sa mémoire."
+  lead="Internet et le Web, ce n’est pas la même chose. Internet relie des ordinateurs depuis 1969. Le Web, inventé au CERN entre 1989 et 1991, est l’un des services qui l’utilisent, comme l’e-mail."
+  sources={S}
+>
+  <div class="definition" slot="definition">
+    <p class="kicker">En une phrase</p>
+    <p>
+      <strong>Internet</strong> est le réseau qui relie les ordinateurs du monde entier ; <strong>le Web</strong> est un service
+      qui fonctionne sur ce réseau : des pages reliées par des liens, que l’on consulte avec un navigateur.
+    </p>
+  </div>
+
+  <figure class="figure" slot="illustration">
+    <div class="figure__frame">
+      <PremierServeur />
+    </div>
+    <figcaption>
+      <strong>Le premier serveur Web.</strong> Fin 1990, il tourne au CERN sur un ordinateur NeXT, avec une étiquette qui
+      interdit de l’éteindre<Cite list={S} ids={['cern-short', 'cern-birth']} />. Illustration réalisée pour ce site.
+    </figcaption>
+  </figure>
+
+  <section class="section" aria-labelledby="route">
+    <div class="wrap">
+      <div class="prose">
+        <p class="kicker">Ne plus confondre</p>
+        <h2 id="route">Internet, ce sont les routes ; le Web, une livraison</h2>
+        <p>
+          Imaginez une ville. <strong>Internet</strong>, ce sont les routes : un immense réseau de câbles, d’antennes et
+          d’ordinateurs qui s’échangent des données grâce à une langue commune, le protocole TCP/IP, adopté par tout le réseau
+          le 1<sup>er</sup> janvier 1983<Cite list={S} ids={['isoc-brief', 'chm-1980s']} />.
+        </p>
+        <p>
+          <strong>Le Web</strong>, c’est un service de livraison qui circule sur ces routes : il apporte des pages jusqu’à votre
+          écran. D’autres services empruntent les mêmes routes : l’e-mail, la visioconférence, les jeux en ligne. On peut donc
+          utiliser Internet sans utiliser le Web, mais pas l’inverse.
+        </p>
+      </div>
+
+      <div class="table-wrap stack reveal" style="margin-top:2rem">
+        <table>
+          <caption class="visually-hidden">Comparaison entre Internet et le Web</caption>
+          <thead>
+            <tr><th scope="col"><span class="visually-hidden">Question</span></th><th scope="col">Internet</th><th scope="col">Le Web</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">C’est quoi ?</th>
+              <td data-label="Internet">Un réseau de réseaux, qui transporte des données</td>
+              <td data-label="Le Web">Des pages reliées par des liens hypertextes</td>
+            </tr>
+            <tr>
+              <th scope="row">Né quand ?</th>
+              <td data-label="Internet">1969 avec ARPANET<Cite list={S} ids={['chm-1960s', 'isoc-brief']} />, TCP/IP en 1983</td>
+              <td data-label="Le Web">Proposé en 1989, en ligne fin 1990, ouvert au public en 1991<Cite list={S} ids={['cern-short', 'w3c-history']} /></td>
+            </tr>
+            <tr>
+              <th scope="row">Où ?</th>
+              <td data-label="Internet">Dans des universités et des centres de recherche américains</td>
+              <td data-label="Le Web">Au CERN, le laboratoire européen de physique, près de Genève</td>
+            </tr>
+            <tr>
+              <th scope="row">On l’utilise avec…</th>
+              <td data-label="Internet">Toutes les applications connectées</td>
+              <td data-label="Le Web">Un navigateur : Chrome, Firefox, Safari, Edge…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="briques">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Octobre 1990</p>
+        <h2 id="briques">Les trois briques du Web</h2>
+        <p>
+          Dès octobre 1990, Tim Berners-Lee a écrit les trois technologies sur lesquelles le Web repose encore
+          aujourd’hui<Cite list={S} ids={['webfoundation-history', 'britishcouncil-history']} />. Chacune a sa page sur ce site.
+        </p>
+      </div>
+      <div class="grid-cards">
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">HTML</p>
+          <h3>Le langage des pages</h3>
+          <p>Il décrit le contenu : titres, paragraphes, images et surtout les liens vers d’autres pages.</p>
+          <a href="/standards/">Voir le sujet 4 : les standards</a>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">URL</p>
+          <h3>L’adresse de chaque page</h3>
+          <p>Une adresse unique pour retrouver n’importe quelle page, sur n’importe quel serveur du monde.</p>
+          <a href="/url/">Voir le sujet 2 : l’URL</a>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">HTTP</p>
+          <h3>La façon de demander</h3>
+          <p>Le protocole qu’utilise le navigateur pour demander une page à un serveur, puis la recevoir.</p>
+          <a href="/securite/">Voir le sujet 5 : HTTPS et la sécurité</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Frise interactive">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Seize dates clés</p>
+        <h2>De 1969 à 2026</h2>
+        <p>
+          Filtrez les dates par thème, cliquez sur un point de l’axe pour y sauter, ou parcourez la frise avec les flèches du
+          clavier. Chaque date renvoie à ses deux sources.
+        </p>
+      </div>
+      <Frise list={S} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cailliau">
+    <div class="wrap">
+      <div class="band reveal">
+        <p class="kicker">Une touche belge</p>
+        <h2 id="cailliau">Un Belge parmi les pionniers du Web</h2>
+        <p style="max-width:62ch;margin-top:1rem">
+          On cite souvent Tim Berners-Lee seul. Pourtant, l’ingénieur belge <strong style="color:var(--on-navy)">Robert Cailliau</strong> a travaillé avec lui au CERN dès les débuts du projet.
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat__value">1947</span>
+            <span class="stat__label">Naissance à Tongres, dans le Limbourg</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['focus-cailliau', 'wikipedia-cailliau']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">1990</span>
+            <span class="stat__label">Il co-signe la proposition qui fait du Web un projet officiel du CERN</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['cern-short', 'wikipedia-cailliau']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">WWW</span>
+            <span class="stat__label">Il dessine le premier logo du World Wide Web</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['focus-cailliau', 'wikipedia-cailliau']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">1994</span>
+            <span class="stat__label">Il organise au CERN la première conférence internationale sur le Web</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['cern-short', 'wikipedia-cailliau']} /></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Quiz">
+    <div class="wrap">
+      <QuizAnnee />
+    </div>
+  </section>
+
+  <section class="section" aria-label="Exemple du fil rouge">
+    <div class="wrap">
+      <Exemple title="Le Cornet d’Or arrive dans un Web très peuplé">
+        <p>
+          Fin 1993, on comptait un peu plus de <strong>500 serveurs Web</strong> connus dans le monde<Cite list={S} ids={['cern-short', 'cern-timeline-1993']} />.
+          Quand notre friterie veut son site, en 2026, il existe <strong>401,6 millions de noms de domaine</strong><Cite list={S} ids={['verisign-q2-2026', 'dnib-q2-2026']} />.
+        </p>
+        <p>
+          Pour s’y faire une place, Le Cornet d’Or aura besoin d’une adresse précise (sujet 2), d’un nom de domaine (sujet 3),
+          de pages qui respectent les standards (sujet 4) et d’un site sûr (sujet 5). C’est le parcours de ce site.
+        </p>
+      </Exemple>
+    </div>
+  </section>
+
+  <ol slot="retenir">
+    <li>Internet (le réseau, depuis 1969) et le Web (les pages, depuis 1989-1991) sont deux choses différentes.</li>
+    <li>Le Web est né au CERN, avec Tim Berners-Lee et le Belge Robert Cailliau, puis il a été offert à tous le 30 avril 1993.</li>
+    <li>Depuis, il est devenu mobile (2016), encadré par la loi (RGPD, 2018) et transformé par l’IA (2022).</li>
+  </ol>
+</Subject>

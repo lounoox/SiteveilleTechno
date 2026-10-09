@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import { SUBJECTS } from '../config';
+---
+<Base title="Page introuvable" description="Cette page n'existe pas. Retour au parcours des cinq sujets.">
+  <section class="section">
+    <div class="wrap nf">
+      <div class="nf__logo"><Logo outline /></div>
+      <div class="prose">
+        <p class="kicker">Erreur 404</p>
+        <h1>Cette page n’est pas sur la carte</h1>
+        <p class="lead">
+          Le serveur a bien répondu, mais le chemin demandé n’existe pas. Vérifiez l’adresse (le <a href="/url/">sujet 2</a> explique comment la lire), ou reprenez le parcours :
+        </p>
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          {SUBJECTS.map((s) => <li><a href={s.slug}>{s.n}. {s.title}</a></li>)}
+          <li><a href="/sources/">Sources et outils</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+    align-items: center;
+  }
+  .nf__logo {
+    width: clamp(110px, 6rem + 6vw, 220px);
+    transform: rotate(-14deg);
+  }
+  @media (max-width: 640px) {
+    .nf {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

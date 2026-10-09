@@ -1,0 +1,16 @@
+---
+// Renvoi vers les sources numérotées en bas de page : <Cite list={S} ids={['cern-short', 'w3c-history']} />
+import { source } from '../data/sources';
+
+interface Props {
+  list: string[];
+  ids: string[];
+}
+const { list, ids } = Astro.props;
+const refs = ids.map((id) => {
+  const n = list.indexOf(id) + 1;
+  if (n === 0) throw new Error(`La source ${id} n'est pas dans la liste de la page`);
+  return { n, label: `Source ${n} : ${source(id).publisher}, ${source(id).title}` };
+});
+---
+<sup class="cite">{refs.map((r) => <a href={`#source-${r.n}`} aria-label={r.label}>{r.n}</a>)}</sup>

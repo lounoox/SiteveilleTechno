@@ -1,0 +1,227 @@
+---
+// Jeu « Repérez l'hameçon » : six messages, fiable ou piège ? Exemples fictifs autour du Cornet d'Or.
+import Lab from '../Lab.astro';
+
+const cards = [
+  {
+    from: 'Le Cornet d’Or',
+    kind: 'SMS',
+    text: 'Votre commande n°42 est prête ! Suivi :',
+    link: 'https://lecornetdor.be/commande/42',
+    safe: true,
+    why: 'Lisez le domaine de droite à gauche, jusqu’au premier « / » : lecornetdor.be. C’est bien le site de la friterie.',
+  },
+  {
+    from: 'Livraison',
+    kind: 'SMS',
+    text: 'Colis bloqué : payez 1,99 € de frais avant ce soir :',
+    link: 'https://lecornetdor.be.livraison-express.com/payer',
+    safe: false,
+    why: 'Le vrai domaine est livraison-express.com. « lecornetdor.be » n’est qu’un sous-domaine ajouté devant pour tromper. Et une friterie n’envoie pas de colis !',
+  },
+  {
+    from: 'Concours Cornet d’Or',
+    kind: 'E-mail',
+    text: 'Félicitations, vous gagnez un an de frites gratuites ! Réclamez votre prix :',
+    link: 'https://lecornetd0r.be/concours',
+    safe: false,
+    why: 'Regardez bien : un zéro remplace la lettre « o ». C’est un autre domaine, qui imite le vrai. Le cadenas n’y change rien.',
+  },
+  {
+    from: 'Le Cornet d’Or',
+    kind: 'E-mail',
+    text: 'La carte d’hiver est en ligne, avec deux nouvelles sauces :',
+    link: 'https://www.lecornetdor.be/menu?saison=hiver#sauces',
+    safe: true,
+    why: 'www est un sous-domaine du vrai site. Les paramètres (?saison=hiver) et l’ancre (#sauces) ne changent pas le domaine.',
+  },
+  {
+    from: 'Service client',
+    kind: 'E-mail',
+    text: 'URGENT : votre compte sera supprimé dans 24 h. Confirmez votre mot de passe :',
+    link: 'http://lecornetdor-be.com/connexion',
+    safe: false,
+    why: 'Trois signaux d’alerte : l’urgence, la demande de mot de passe et un domaine différent (lecornetdor-be.com, avec un tiret). En plus, pas de HTTPS.',
+  },
+  {
+    from: 'Safeonweb',
+    kind: 'E-mail',
+    text: 'Un doute sur un message ? Transférez-le à suspect@safeonweb.be. Plus d’infos :',
+    link: 'https://safeonweb.be',
+    safe: true,
+    why: 'safeonweb.be est le site officiel de sensibilisation du Centre pour la Cybersécurité Belgique, recommandé par la police fédérale.',
+  },
+];
+---
+<Lab id="hamecon" title="Repérez l’hameçon" kicker="Jeu · 6 messages">
+  <div class="phish" data-phish>
+    <script type="application/json" data-cards set:html={JSON.stringify(cards)} />
+    <p class="phish__progress kicker" data-progress>Message 1 sur {cards.length}</p>
+    <div class="phish__card" data-card>
+      <p class="phish__from"><span data-kind>{cards[0].kind}</span> · de <strong data-from>{cards[0].from}</strong></p>
+      <p class="phish__text" data-text>{cards[0].text}</p>
+      <p class="phish__link"><code data-link>{cards[0].link}</code></p>
+    </div>
+    <div class="phish__choices" role="group" aria-label="Votre verdict">
+      <button class="btn" type="button" data-answer="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+        Fiable
+      </button>
+      <button class="btn btn--ghost phish__trap" type="button" data-answer="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        Piège
+      </button>
+    </div>
+    <div class="phish__feedback" data-feedback aria-live="polite"></div>
+    <button class="btn btn--gold" type="button" data-next hidden>Message suivant</button>
+    <div class="phish__end" data-end hidden>
+      <p class="phish__score" data-score></p>
+      <p data-end-text></p>
+      <button class="btn btn--gold" type="button" data-restart>Rejouer</button>
+    </div>
+  </div>
+</Lab>
+
+<style>
+  .phish {
+    display: grid;
+    gap: 1rem;
+    max-width: 760px;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  .phish__card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 1.1rem 1.3rem;
+    display: grid;
+    gap: 0.5rem;
+    box-shadow: var(--shadow);
+  }
+  .phish__from {
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  .phish__text {
+    font-size: 1.15rem;
+  }
+  .phish__link code {
+    display: inline-block;
+    font-size: 1.05rem;
+    padding: 0.35rem 0.6rem;
+    background: var(--card);
+    border: 2px dashed var(--blue);
+    border-radius: 10px;
+    color: var(--blue-deep);
+    overflow-wrap: anywhere;
+  }
+  .phish__choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .phish__trap {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+  :global(.phish__res) {
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+  :global(.phish__res--ok) {
+    background: var(--ok-tint);
+    border-left: 6px solid var(--ok);
+  }
+  :global(.phish__res--ko) {
+    background: var(--danger-tint);
+    border-left: 6px solid var(--danger);
+  }
+  :global(.phish__res strong) {
+    font-size: 1.15rem;
+  }
+  .phish__score {
+    font: 800 clamp(2.5rem, 2rem + 3vw, 4rem) / 1 var(--font-display);
+  }
+  .phish__end {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+  }
+</style>
+
+<script>
+  type Card = { from: string; kind: string; text: string; link: string; safe: boolean; why: string };
+
+  document.querySelectorAll<HTMLElement>('[data-phish]').forEach((root) => {
+    const cards: Card[] = JSON.parse(root.querySelector('[data-cards]')!.textContent || '[]');
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const answers = [...root.querySelectorAll<HTMLButtonElement>('[data-answer]')];
+    const feedback = $('[data-feedback]');
+    const next = $<HTMLButtonElement>('[data-next]');
+    const card = $('[data-card]');
+    const end = $('[data-end]');
+    let i = 0;
+    let score = 0;
+
+    const show = () => {
+      const c = cards[i];
+      $('[data-progress]').textContent = `Message ${i + 1} sur ${cards.length}`;
+      $('[data-kind]').textContent = c.kind;
+      $('[data-from]').textContent = c.from;
+      $('[data-text]').textContent = c.text;
+      $('[data-link]').textContent = c.link;
+      feedback.innerHTML = '';
+      answers.forEach((b) => (b.disabled = false));
+      next.hidden = true;
+    };
+
+    answers.forEach((b) =>
+      b.addEventListener('click', () => {
+        const c = cards[i];
+        const said = b.dataset.answer === 'true';
+        const good = said === c.safe;
+        if (good) score++;
+        answers.forEach((x) => (x.disabled = true));
+        const truth = c.safe ? 'Ce lien est fiable.' : 'C’est un piège.';
+        feedback.innerHTML = `<div class="phish__res ${good ? 'phish__res--ok' : 'phish__res--ko'}"><strong>${good ? '✓ Bien vu !' : '✗ Raté.'} ${truth}</strong><span></span></div>`;
+        feedback.querySelector('span')!.textContent = c.why;
+        next.hidden = false;
+        next.textContent = i === cards.length - 1 ? 'Voir mon score' : 'Message suivant';
+        next.focus();
+      })
+    );
+
+    next.addEventListener('click', () => {
+      i++;
+      if (i < cards.length) {
+        show();
+        answers[0].focus();
+        return;
+      }
+      [card, feedback, next, ...answers, $('[data-progress]')].forEach((el) => (el.hidden = true));
+      root.querySelector<HTMLElement>('.phish__choices')!.hidden = true;
+      end.hidden = false;
+      $('[data-score]').textContent = `${score} / ${cards.length}`;
+      $('[data-end-text]').textContent =
+        score === cards.length
+          ? 'Parfait : vous lisez les adresses comme un pro. Gardez le réflexe : domaine d’abord, de droite à gauche.'
+          : 'Le réflexe à garder : avant de cliquer, lisez le domaine de droite à gauche, jusqu’au premier « / ».';
+      $<HTMLButtonElement>('[data-restart]').focus();
+    });
+
+    $('[data-restart]').addEventListener('click', () => {
+      i = 0;
+      score = 0;
+      end.hidden = true;
+      [card, feedback, $('[data-progress]')].forEach((el) => (el.hidden = false));
+      root.querySelector<HTMLElement>('.phish__choices')!.hidden = false;
+      answers.forEach((a) => (a.hidden = false));
+      show();
+      answers[0].focus();
+    });
+  });
+</script>

@@ -1,0 +1,31 @@
+---
+import { source } from '../data/sources';
+import { SITE } from '../config';
+
+interface Props {
+  list: string[];
+  idPrefix?: string;
+}
+const { list, idPrefix = 'source-' } = Astro.props;
+const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
+---
+<ol class="sources-list">
+  {
+    list.map((id, i) => {
+      const s = source(id);
+      return (
+        <li id={`${idPrefix}${i + 1}`}>
+          <span class="n" aria-hidden="true">{i + 1}</span>
+          <div>
+            <span class="pub">{s.publisher}</span>
+            <a href={s.url} hreflang={s.lang} lang={s.lang === 'en' ? 'en' : undefined}>{s.title}</a>
+            <span class="meta">
+              {host(s.url)}
+              {s.date ? ` · publié : ${s.date}` : ''} · {s.lang === 'en' ? 'en anglais' : 'en français'} · consulté le {SITE.consulted}
+            </span>
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>

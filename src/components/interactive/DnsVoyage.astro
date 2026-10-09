@@ -1,0 +1,277 @@
+---
+// Le voyage d'une requête DNS, étape par étape. Le texte de chaque étape est lu par les lecteurs d'écran.
+import Lab from '../Lab.astro';
+
+const nodes = {
+  nav: { x: 70, y: 180, label: 'Votre navigateur', icon: 'nav' },
+  res: { x: 250, y: 180, label: 'Résolveur DNS', icon: 'res' },
+  root: { x: 520, y: 50, label: 'Serveur racine « . »', icon: 'srv' },
+  tld: { x: 520, y: 180, label: 'Serveur du .be', icon: 'srv' },
+  auth: { x: 520, y: 310, label: 'Serveur de lecornetdor.be', icon: 'srv' },
+};
+type Key = keyof typeof nodes;
+const steps: { from: Key; to: Key; title: string; text: string }[] = [
+  { from: 'nav', to: 'res', title: 'La question', text: 'Vous tapez www.lecornetdor.be. Le navigateur ne connaît pas encore l’adresse IP : il demande au résolveur, souvent celui de votre fournisseur d’accès.' },
+  { from: 'res', to: 'root', title: 'Le résolveur commence par la racine', text: 'Le résolveur ne connaît pas non plus la réponse. Il interroge un serveur racine, tout en haut de l’arbre.' },
+  { from: 'root', to: 'res', title: 'La racine renvoie vers le .be', text: 'La racine ne connaît pas l’adresse, mais elle sait qui gère l’extension .be : « Demande aux serveurs du .be. »' },
+  { from: 'res', to: 'tld', title: 'Question au serveur du .be', text: 'Le résolveur pose la même question au serveur de l’extension .be, géré par le registre DNS Belgium.' },
+  { from: 'tld', to: 'res', title: 'Le .be indique le bon serveur', text: '« lecornetdor.be est décrit par tel serveur de noms. » C’est le serveur qui fait autorité pour ce domaine, souvent chez l’hébergeur.' },
+  { from: 'res', to: 'auth', title: 'Question au serveur qui fait autorité', text: 'Le résolveur interroge enfin le serveur qui connaît vraiment la réponse pour lecornetdor.be.' },
+  { from: 'auth', to: 'res', title: 'La réponse', text: '« www.lecornetdor.be correspond à l’adresse 203.0.113.42 ». Cette adresse est réservée aux exemples, comme notre friterie.' },
+  { from: 'res', to: 'nav', title: 'Retour au navigateur', text: 'Le résolveur transmet l’adresse et la garde en mémoire pendant une durée fixée, le TTL. La prochaine visite sera immédiate. Le navigateur peut maintenant contacter le serveur et demander la page.' },
+];
+const pathOf = (a: Key, b: Key) => {
+  const A = nodes[a];
+  const B = nodes[b];
+  return `M${A.x} ${A.y} L${B.x} ${B.y}`;
+};
+const data = steps.map((s) => ({ ...s, d: pathOf(s.from, s.to) }));
+---
+<Lab id="voyage-dns" title="Le voyage d’une requête DNS">
+  <div class="dnsv" data-dnsv>
+    <script type="application/json" data-steps set:html={JSON.stringify(data)} />
+    <div class="dnsv__stage">
+      <svg viewBox="0 0 640 380" class="dnsv__svg" aria-hidden="true">
+        <g class="dnsv__links">
+          <path d={pathOf('nav', 'res')} />
+          <path d={pathOf('res', 'root')} />
+          <path d={pathOf('res', 'tld')} />
+          <path d={pathOf('res', 'auth')} />
+        </g>
+        <path class="dnsv__active" d={data[0].d} data-active />
+        {
+          (Object.keys(nodes) as Key[]).map((k) => {
+            const n = nodes[k];
+            return (
+              <g class={`dnsv__node dnsv__node--${n.icon}`} data-node={k} transform={`translate(${n.x} ${n.y})`}>
+                <circle r="34" />
+                {n.icon === 'nav' && (
+                  <g class="ico">
+                    <rect x="-17" y="-13" width="34" height="23" rx="3" />
+                    <path d="M-22 14 h44" />
+                  </g>
+                )}
+                {n.icon === 'res' && (
+                  <g class="ico">
+                    <circle r="13" />
+                    <path d="M-13 0 h26 M0 -13 c6 6 6 20 0 26 M0 -13 c-6 6 -6 20 0 26" />
+                  </g>
+                )}
+                {n.icon === 'srv' && (
+                  <g class="ico">
+                    <rect x="-14" y="-15" width="28" height="12" rx="3" />
+                    <rect x="-14" y="2" width="28" height="12" rx="3" />
+                  </g>
+                )}
+                <text y="56" x="0" text-anchor="middle" class="lbl">
+                  {n.label}
+                </text>
+              </g>
+            );
+          })
+        }
+        <circle class="dnsv__packet" r="10" cx="70" cy="180" data-packet />
+      </svg>
+    </div>
+
+    <div class="dnsv__panel">
+      <p class="kicker" data-count>Étape 1 sur {steps.length}</p>
+      <div aria-live="polite">
+        <h4 class="dnsv__title" data-title>{steps[0].title}</h4>
+        <p class="dnsv__text" data-text>{steps[0].text}</p>
+      </div>
+      <div class="dnsv__btns">
+        <button class="btn btn--sm btn--ghost" type="button" data-prev disabled>← Précédent</button>
+        <button class="btn btn--sm btn--gold" type="button" data-next>Étape suivante →</button>
+        <button class="btn btn--sm btn--ghost" type="button" data-auto>Lecture automatique</button>
+      </div>
+      <ol class="dnsv__dots" aria-hidden="true">
+        {steps.map((_, i) => <li class={i === 0 ? 'on' : ''} />)}
+      </ol>
+    </div>
+  </div>
+</Lab>
+
+<style>
+  .dnsv {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .dnsv {
+      grid-template-columns: 1fr;
+    }
+  }
+  .dnsv__stage {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+  }
+  .dnsv__svg {
+    width: 100%;
+    font-family: var(--font-body);
+  }
+  .dnsv__links path {
+    stroke: var(--line);
+    stroke-width: 4;
+    stroke-dasharray: 2 8;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .dnsv__active {
+    stroke: var(--gold);
+    stroke-width: 6;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .dnsv__node circle {
+    fill: var(--card);
+    stroke: var(--ink);
+    stroke-width: 3;
+    transition: fill 0.3s;
+  }
+  .dnsv__node .ico rect,
+  .dnsv__node .ico circle,
+  .dnsv__node .ico path {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .dnsv__node.is-on > circle {
+    fill: var(--gold);
+  }
+  .dnsv__node.is-on .ico rect,
+  .dnsv__node.is-on .ico circle,
+  .dnsv__node.is-on .ico path {
+    stroke: #141b2d;
+  }
+  .dnsv__node .lbl {
+    fill: var(--ink);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .dnsv__packet {
+    fill: var(--blue-bright);
+    stroke: var(--card);
+    stroke-width: 3;
+  }
+  .dnsv__panel {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .dnsv__title {
+    font: 800 1.45rem/1.2 var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  .dnsv__text {
+    color: var(--muted);
+    min-height: 6.5em;
+  }
+  .dnsv__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .dnsv__dots {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 0.4rem;
+  }
+  .dnsv__dots li {
+    width: 26px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--line);
+    transition: background-color 0.3s;
+  }
+  .dnsv__dots li.on {
+    background: var(--ink);
+  }
+</style>
+
+<script>
+  type Step = { from: string; to: string; title: string; text: string; d: string };
+
+  document.querySelectorAll<HTMLElement>('[data-dnsv]').forEach((root) => {
+    const steps: Step[] = JSON.parse(root.querySelector('[data-steps]')!.textContent || '[]');
+    const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
+    const active = $<SVGPathElement>('[data-active]');
+    const packet = $<SVGCircleElement>('[data-packet]');
+    const prev = $<HTMLButtonElement>('[data-prev]');
+    const next = $<HTMLButtonElement>('[data-next]');
+    const auto = $<HTMLButtonElement>('[data-auto]');
+    const dots = [...root.querySelectorAll('.dnsv__dots li')];
+    const nodes = [...root.querySelectorAll<SVGGElement>('[data-node]')];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let i = 0;
+    let anim = 0;
+    let timer = 0;
+
+    const movePacket = (d: string) => {
+      active.setAttribute('d', d);
+      const len = active.getTotalLength();
+      cancelAnimationFrame(anim);
+      if (reduce) {
+        const p = active.getPointAtLength(len);
+        packet.setAttribute('cx', String(p.x));
+        packet.setAttribute('cy', String(p.y));
+        return;
+      }
+      active.style.strokeDasharray = String(len);
+      const t0 = performance.now();
+      const dur = 900;
+      const tick = (t: number) => {
+        const k = Math.min(1, (t - t0) / dur);
+        const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        const p = active.getPointAtLength(e * len);
+        packet.setAttribute('cx', String(p.x));
+        packet.setAttribute('cy', String(p.y));
+        active.style.strokeDashoffset = String(len * (1 - e));
+        if (k < 1) anim = requestAnimationFrame(tick);
+      };
+      anim = requestAnimationFrame(tick);
+    };
+
+    const show = (n: number) => {
+      i = Math.max(0, Math.min(steps.length - 1, n));
+      const s = steps[i];
+      $('[data-count]').textContent = `Étape ${i + 1} sur ${steps.length}`;
+      $('[data-title]').textContent = s.title;
+      $('[data-text]').textContent = s.text;
+      prev.disabled = i === 0;
+      next.textContent = i === steps.length - 1 ? 'Recommencer ↺' : 'Étape suivante →';
+      dots.forEach((d, k) => d.classList.toggle('on', k <= i));
+      nodes.forEach((g) => g.classList.toggle('is-on', g.dataset.node === s.to));
+      movePacket(s.d);
+    };
+
+    const stopAuto = () => {
+      clearInterval(timer);
+      timer = 0;
+      auto.textContent = 'Lecture automatique';
+    };
+    next.addEventListener('click', () => {
+      stopAuto();
+      show(i === steps.length - 1 ? 0 : i + 1);
+    });
+    prev.addEventListener('click', () => {
+      stopAuto();
+      show(i - 1);
+    });
+    auto.addEventListener('click', () => {
+      if (timer) return stopAuto();
+      auto.textContent = 'Pause';
+      if (i === steps.length - 1) show(0);
+      timer = window.setInterval(() => {
+        if (i >= steps.length - 1) return stopAuto();
+        show(i + 1);
+      }, 3200);
+    });
+    show(0);
+  });
+</script>

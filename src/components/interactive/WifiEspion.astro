@@ -1,0 +1,290 @@
+---
+// Ce que voit un espion branché sur le Wi-Fi d'un café, avec HTTP puis avec HTTPS.
+import Lab from '../Lab.astro';
+
+const message = 'POST /connexion\nHost: lecornetdor.be\n\nemail=lea@exemple.be\nmotdepasse=Frites4ever!';
+---
+<Lab id="espion" title="Ce que voit l’espion du Wi-Fi">
+  <div class="wifi" data-wifi>
+    <script type="application/json" data-message set:html={JSON.stringify(message)} />
+    <fieldset class="wifi__switch">
+      <legend>Le site utilise :</legend>
+      <label><input type="radio" name="proto" value="http" checked /><span>HTTP <small>(sans chiffrement)</small></span></label>
+      <label><input type="radio" name="proto" value="https" /><span>HTTPS <small>(chiffré)</small></span></label>
+    </fieldset>
+
+    <div class="wifi__scene">
+      <svg viewBox="0 0 640 220" class="wifi__svg" aria-hidden="true">
+        <path class="wifi__line" d="M90 110 H 550" />
+        <!-- téléphone -->
+        <g transform="translate(60 110)">
+          <rect x="-26" y="-46" width="52" height="92" rx="10" class="dev" />
+          <rect x="-19" y="-36" width="38" height="64" rx="4" class="screen" />
+          <circle cy="36" r="3.5" class="dot" />
+          <text y="74" text-anchor="middle" class="lbl">Léa</text>
+        </g>
+        <!-- borne wifi + espion -->
+        <g transform="translate(300 110)">
+          <rect x="-34" y="-14" width="68" height="34" rx="8" class="dev" />
+          <path d="M-18 -26 a26 26 0 0 1 36 0 M-10 -18 a14 14 0 0 1 20 0" class="waves" />
+          <circle cx="-14" cy="3" r="3.5" class="dot" /><circle cx="0" cy="3" r="3.5" class="dot" /><circle cx="14" cy="3" r="3.5" class="dot" />
+          <text y="44" text-anchor="middle" class="lbl">Wi-Fi du café</text>
+          <g transform="translate(0 -78)" class="spy">
+            <ellipse rx="34" ry="20" class="eye" />
+            <circle r="11" class="pupil" />
+            <circle r="4.5" class="pupil-in" />
+          </g>
+        </g>
+        <!-- serveur -->
+        <g transform="translate(580 110)">
+          <rect x="-30" y="-44" width="60" height="26" rx="6" class="dev" />
+          <rect x="-30" y="-13" width="60" height="26" rx="6" class="dev" />
+          <rect x="-30" y="18" width="60" height="26" rx="6" class="dev" />
+          <text y="74" text-anchor="middle" class="lbl">lecornetdor.be</text>
+        </g>
+        <g class="wifi__packet" data-packet transform="translate(90 110)">
+          <rect x="-22" y="-14" width="44" height="28" rx="6" />
+          <path d="M-14 -6 l14 10 l14 -10" class="env" />
+        </g>
+      </svg>
+    </div>
+
+    <div class="wifi__panels">
+      <div class="wifi__panel">
+        <p class="kicker">Ce que Léa envoie</p>
+        <pre class="wifi__msg">{message}</pre>
+      </div>
+      <div class="wifi__panel wifi__panel--spy">
+        <p class="kicker">Ce que l’espion intercepte</p>
+        <pre class="wifi__msg" data-spy aria-live="polite">(rien pour l’instant)</pre>
+      </div>
+    </div>
+
+    <div class="wifi__actions">
+      <button class="btn btn--gold" type="button" data-send>Envoyer le formulaire</button>
+      <p class="wifi__verdict" data-verdict aria-live="polite"></p>
+    </div>
+    <p class="lab__hint">Démonstration simplifiée : les données sont inventées et rien n’est envoyé sur Internet.</p>
+  </div>
+</Lab>
+
+<style>
+  .wifi {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .wifi__switch {
+    border: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  .wifi__switch legend {
+    float: left;
+    font-weight: 700;
+    margin-right: 0.5rem;
+  }
+  .wifi__switch label {
+    position: relative;
+  }
+  .wifi__switch input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .wifi__switch span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 48px;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    font-weight: 700;
+  }
+  .wifi__switch small {
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .wifi__switch input:checked + span {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+  .wifi__switch input:checked + span small {
+    color: inherit;
+    opacity: 0.8;
+  }
+  .wifi__switch input:focus-visible + span {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .wifi__scene {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.5rem;
+  }
+  .wifi__svg {
+    width: 100%;
+    font-family: var(--font-body);
+  }
+  .wifi__line {
+    stroke: var(--faint);
+    stroke-width: 4;
+    stroke-dasharray: 2 9;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .dev {
+    fill: var(--navy);
+  }
+  .screen {
+    fill: var(--gold);
+  }
+  .dot {
+    fill: var(--gold);
+  }
+  .waves {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+  .lbl {
+    fill: var(--ink);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .eye {
+    fill: var(--card);
+    stroke: var(--danger);
+    stroke-width: 4;
+  }
+  .pupil {
+    fill: var(--danger);
+  }
+  .pupil-in {
+    fill: var(--card);
+  }
+  .wifi__packet rect {
+    fill: var(--blue-bright);
+    stroke: var(--card);
+    stroke-width: 3;
+  }
+  .wifi__packet .env {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  [data-proto='https'] .wifi__packet rect {
+    fill: var(--gold);
+  }
+  [data-proto='https'] .wifi__packet .env {
+    stroke: #141b2d;
+  }
+  .wifi__panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 760px) {
+    .wifi__panels {
+      grid-template-columns: 1fr;
+    }
+  }
+  .wifi__panel {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .wifi__msg {
+    background: var(--navy-2);
+    color: var(--on-navy);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    font: 500 0.9rem/1.6 var(--font-mono);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-height: 9.5em;
+  }
+  .wifi__panel--spy .wifi__msg {
+    box-shadow: inset 0 0 0 3px var(--danger);
+  }
+  .wifi__panel--spy .kicker {
+    color: var(--danger);
+  }
+  .wifi__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .wifi__verdict {
+    font-weight: 700;
+    flex: 1 1 280px;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-wifi]').forEach((root) => {
+    const message: string = JSON.parse(root.querySelector('[data-message]')!.textContent || '""');
+    const spy = root.querySelector<HTMLElement>('[data-spy]')!;
+    const verdict = root.querySelector<HTMLElement>('[data-verdict]')!;
+    const packet = root.querySelector<SVGGElement>('[data-packet]')!;
+    const send = root.querySelector<HTMLButtonElement>('[data-send]')!;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let proto = 'http';
+    let anim = 0;
+
+    const cipher = () => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+      const bytes = new Uint8Array(150);
+      crypto.getRandomValues(bytes);
+      const s = [...bytes].map((b) => chars[b % 64]).join('');
+      return s.match(/.{1,30}/g)!.join('\n');
+    };
+
+    root.querySelectorAll<HTMLInputElement>('input[name="proto"]').forEach((r) =>
+      r.addEventListener('change', () => {
+        proto = r.value;
+        root.dataset.proto = proto;
+        spy.textContent = '(rien pour l’instant)';
+        verdict.textContent = '';
+      })
+    );
+
+    const finish = () => {
+      if (proto === 'http') {
+        spy.textContent = message;
+        verdict.textContent = 'Avec HTTP, l’espion lit tout en clair : l’adresse e-mail et le mot de passe de Léa.';
+      } else {
+        spy.textContent = `Connexion chiffrée (TLS) avec un serveur.\nContenu :\n${cipher()}`;
+        verdict.textContent = 'Avec HTTPS, l’espion voit qu’un échange a lieu, mais son contenu est illisible : il est chiffré.';
+      }
+    };
+
+    send.addEventListener('click', () => {
+      cancelAnimationFrame(anim);
+      spy.textContent = '…';
+      verdict.textContent = '';
+      if (reduce) return finish();
+      const t0 = performance.now();
+      const dur = 1400;
+      const tick = (t: number) => {
+        const k = Math.min(1, (t - t0) / dur);
+        const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        packet.setAttribute('transform', `translate(${90 + e * 460} 110)`);
+        if (k < 1) anim = requestAnimationFrame(tick);
+        else finish();
+      };
+      anim = requestAnimationFrame(tick);
+    });
+  });
+</script>

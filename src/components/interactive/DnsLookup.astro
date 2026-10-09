@@ -1,0 +1,172 @@
+---
+// Interroge un vrai résolveur DNS public (dns.google, format JSON) depuis le navigateur.
+import Lab from '../Lab.astro';
+
+const suggestions = ['dnsbelgium.be', 'belgium.be', 'wikipedia.org', 'lecornetdor.be'];
+---
+<Lab id="dns-live" title="Interrogez un vrai serveur DNS" kicker="En direct">
+  <div class="dnsl" data-dnsl>
+    <form class="dnsl__form" data-form>
+      <div class="dnsl__field">
+        <label for="dns-name">Nom de domaine</label>
+        <input id="dns-name" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" value="dnsbelgium.be" data-name />
+      </div>
+      <div class="dnsl__field">
+        <label for="dns-type">Ce que l’on cherche</label>
+        <select id="dns-type" data-type>
+          <option value="A">A : adresse IPv4</option>
+          <option value="AAAA">AAAA : adresse IPv6</option>
+          <option value="NS">NS : serveurs de noms</option>
+          <option value="MX">MX : serveurs d’e-mail</option>
+        </select>
+      </div>
+      <button class="btn btn--gold" type="submit">Interroger le DNS</button>
+    </form>
+    <div class="chips" role="group" aria-label="Exemples de noms à tester">
+      {suggestions.map((s) => <button class="chip" type="button" data-try={s}>{s}</button>)}
+    </div>
+    <div class="dnsl__out" aria-live="polite" data-out>
+      <p class="lab__hint">Choisissez un nom, puis cliquez sur « Interroger le DNS ».</p>
+    </div>
+    <p class="lab__hint dnsl__privacy">
+      Vie privée : la question est envoyée au résolveur public de Google (dns.google), comme le ferait un navigateur. Ne tapez
+      rien de personnel.
+    </p>
+  </div>
+</Lab>
+
+<style>
+  .dnsl {
+    display: grid;
+    gap: 1rem;
+  }
+  .dnsl__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.75rem;
+  }
+  .dnsl__field {
+    display: grid;
+    gap: 0.35rem;
+    flex: 1 1 220px;
+  }
+  .dnsl__field label {
+    font-weight: 700;
+  }
+  .dnsl__field input,
+  .dnsl__field select {
+    min-height: 52px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: var(--paper);
+    font: 500 1rem/1.4 var(--font-mono);
+    width: 100%;
+  }
+  .dnsl__field input:focus,
+  .dnsl__field select:focus {
+    border-color: var(--ink);
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+  .dnsl__out {
+    display: grid;
+    gap: 0.75rem;
+    min-height: 4rem;
+  }
+  :global(.dnsl__msg) {
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    background: var(--paper);
+    border-left: 6px solid var(--blue);
+  }
+  :global(.dnsl__msg--nx) {
+    border-left-color: var(--gold);
+    background: var(--gold-tint);
+  }
+  :global(.dnsl__msg--err) {
+    border-left-color: var(--danger);
+    background: var(--danger-tint);
+  }
+  :global(.dnsl__out td code) {
+    overflow-wrap: anywhere;
+  }
+  .dnsl__privacy {
+    font-size: 0.88rem;
+  }
+</style>
+
+<script>
+  const TYPES: Record<number, string> = { 1: 'A', 2: 'NS', 5: 'CNAME', 6: 'SOA', 15: 'MX', 28: 'AAAA', 16: 'TXT' };
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  const human = (sec: number) =>
+    sec < 60 ? `${sec} s` : sec < 3600 ? `${Math.round(sec / 60)} min` : sec < 86400 ? `${Math.round(sec / 3600)} h` : `${Math.round(sec / 86400)} j`;
+  const clean = (raw: string) => {
+    let v = raw.trim().toLowerCase();
+    try {
+      if (/^[a-z]+:\/\//.test(v)) v = new URL(v).hostname;
+    } catch {}
+    return v.replace(/\/.*$/, '').replace(/\.$/, '');
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-dnsl]').forEach((root) => {
+    const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+    const nameInput = root.querySelector<HTMLInputElement>('[data-name]')!;
+    const typeSel = root.querySelector<HTMLSelectElement>('[data-type]')!;
+    const out = root.querySelector<HTMLElement>('[data-out]')!;
+
+    async function lookup() {
+      const name = clean(nameInput.value);
+      const type = typeSel.value;
+      if (!/^[a-z0-9à-ÿ-]+(\.[a-z0-9à-ÿ-]+)+$/.test(name)) {
+        out.innerHTML = `<p class="dnsl__msg dnsl__msg--err">Ce n’est pas un nom de domaine valide. Exemple : <code>dnsbelgium.be</code>.</p>`;
+        return;
+      }
+      out.innerHTML = `<p class="lab__hint">Question envoyée au DNS pour <code>${esc(name)}</code>…</p>`;
+      const t0 = performance.now();
+      try {
+        const res = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`, {
+          headers: { accept: 'application/dns-json' },
+        });
+        const data = await res.json();
+        const ms = Math.round(performance.now() - t0);
+        if (data.Status === 3) {
+          const soa = (data.Authority || []).find((a: any) => a.type === 6);
+          const zone = soa ? soa.name.replace(/\.$/, '') : name.split('.').slice(-1)[0];
+          out.innerHTML = `<p class="dnsl__msg dnsl__msg--nx"><strong>Ce nom n’existe pas</strong> (réponse NXDOMAIN, en ${ms} ms). C’est le serveur de l’extension <code>.${esc(zone)}</code> qui l’affirme.${name === 'lecornetdor.be' ? ' Normal : Le Cornet d’Or est une friterie inventée. Le nom est donc encore libre !' : ''}</p>`;
+          return;
+        }
+        const answers = (data.Answer || []) as { name: string; type: number; TTL: number; data: string }[];
+        if (data.Status !== 0 || !answers.length) {
+          out.innerHTML = `<p class="dnsl__msg">Le nom existe, mais il n’a pas d’enregistrement de type <strong>${esc(type)}</strong>. Essayez un autre type dans la liste.</p>`;
+          return;
+        }
+        const rows = answers
+          .map((a) => `<tr><td data-label="Nom"><code>${esc(a.name.replace(/\.$/, ''))}</code></td><td data-label="Type">${esc(TYPES[a.type] || String(a.type))}</td><td data-label="En mémoire">${human(a.TTL)}</td><td data-label="Réponse"><code>${esc(a.data)}</code></td></tr>`)
+          .join('');
+        const first = answers.find((a) => a.type === 1 || a.type === 28);
+        out.innerHTML = `
+          <p class="dnsl__msg"><strong>Réponse reçue en ${ms} ms.</strong> ${first ? `Votre navigateur contacterait le serveur à l’adresse <code>${esc(first.data)}</code>.` : 'Voici ce que le DNS sait de ce domaine.'} La colonne « En mémoire » est le TTL : la durée pendant laquelle les résolveurs peuvent garder cette réponse.</p>
+          <div class="table-wrap stack"><table>
+            <caption class="visually-hidden">Réponse du DNS pour ${esc(name)}</caption>
+            <thead><tr><th scope="col">Nom</th><th scope="col">Type</th><th scope="col">En mémoire</th><th scope="col">Réponse</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table></div>`;
+      } catch {
+        out.innerHTML = `<p class="dnsl__msg dnsl__msg--err">Impossible de joindre le serveur DNS (pas de connexion, ou requête bloquée par le réseau). Réessayez plus tard.</p>`;
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      lookup();
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-try]').forEach((b) =>
+      b.addEventListener('click', () => {
+        nameInput.value = b.dataset.try!;
+        lookup();
+      })
+    );
+  });
+</script>

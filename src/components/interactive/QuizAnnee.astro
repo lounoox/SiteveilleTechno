@@ -1,0 +1,208 @@
+---
+// Quiz « Devinez l'année » : cinq dates de la frise, un curseur, des points.
+import Lab from '../Lab.astro';
+import { EVENTS } from '../../data/timeline';
+
+const data = EVENTS.map(({ id, title, date, year }) => ({ id, title, date, year }));
+---
+<Lab id="quiz-annee" title="Devinez l'année" kicker="Quiz · 5 questions">
+  <div class="quiz" data-quiz>
+    <script type="application/json" data-quiz-data set:html={JSON.stringify(data)} />
+
+    <div class="quiz__start" data-step="start">
+      <p>
+        Cinq événements de la frise, tirés au hasard. Placez le curseur sur l’année que vous pensez juste.
+        Pile la bonne année : 10 points. Chaque année d’écart coûte un point.
+      </p>
+      <button class="btn btn--gold" type="button" data-start>Lancer le quiz</button>
+    </div>
+
+    <form class="quiz__play" data-step="play" hidden>
+      <p class="quiz__progress kicker" data-progress>Question 1 sur 5</p>
+      <p class="quiz__question" data-question></p>
+      <p class="quiz__label"><label for="quiz-range">Votre réponse :</label> <output for="quiz-range" data-out aria-live="off">1995</output></p>
+      <input id="quiz-range" type="range" min="1965" max="2026" step="1" value="1995" data-range />
+      <div class="quiz__scale" aria-hidden="true"><span>1965</span><span>1995</span><span>2026</span></div>
+      <div class="quiz__actions">
+        <button class="btn btn--sm btn--ghost" type="button" data-nudge="-1" aria-label="Une année plus tôt">− 1 an</button>
+        <button class="btn btn--sm btn--ghost" type="button" data-nudge="1" aria-label="Une année plus tard">+ 1 an</button>
+        <button class="btn btn--gold" type="submit" data-validate>Valider</button>
+        <button class="btn" type="button" data-next hidden>Question suivante</button>
+      </div>
+      <div class="quiz__feedback" aria-live="polite" data-feedback></div>
+    </form>
+
+    <div class="quiz__end" data-step="end" hidden>
+      <p class="quiz__score" data-score></p>
+      <p data-verdict></p>
+      <button class="btn btn--gold" type="button" data-restart>Rejouer avec d’autres dates</button>
+    </div>
+  </div>
+</Lab>
+
+<style>
+  .quiz {
+    display: grid;
+    gap: 1rem;
+    max-width: 760px;
+  }
+  .quiz__start,
+  .quiz__play,
+  .quiz__end {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  .quiz__question {
+    font: 800 clamp(1.5rem, 1.2rem + 1.4vw, 2.1rem) / 1.15 var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  .quiz__label {
+    font-weight: 700;
+  }
+  .quiz__label output {
+    display: inline-block;
+    min-width: 4ch;
+    margin-left: 0.3rem;
+    padding: 0.1rem 0.6rem;
+    border-radius: 8px;
+    background: var(--gold);
+    color: #141b2d;
+    font: 800 1.4rem/1.2 var(--font-display);
+    font-variant-numeric: tabular-nums;
+  }
+  input[type='range'] {
+    width: 100%;
+    accent-color: var(--blue);
+    height: 2.2rem;
+    cursor: pointer;
+  }
+  .quiz__scale {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font: 700 0.8rem/1 var(--font-mono);
+    color: var(--muted);
+    margin-top: -0.6rem;
+  }
+  .quiz__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .quiz__feedback:not(:empty) {
+    width: 100%;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    background: var(--paper-2);
+    border-left: 6px solid var(--blue);
+  }
+  .quiz__feedback strong {
+    font-size: 1.15rem;
+  }
+  .quiz__score {
+    font: 800 clamp(2.5rem, 2rem + 3vw, 4rem) / 1 var(--font-display);
+    letter-spacing: -0.03em;
+  }
+</style>
+
+<script>
+  type Item = { id: string; title: string; date: string; year: number };
+
+  document.querySelectorAll<HTMLElement>('[data-quiz]').forEach((root) => {
+    const data: Item[] = JSON.parse(root.querySelector('[data-quiz-data]')!.textContent || '[]');
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const start = $('[data-step="start"]');
+    const play = $<HTMLFormElement>('[data-step="play"]');
+    const end = $('[data-step="end"]');
+    const range = $<HTMLInputElement>('[data-range]');
+    const out = $<HTMLOutputElement>('[data-out]');
+    const question = $('[data-question]');
+    const progress = $('[data-progress]');
+    const feedback = $('[data-feedback]');
+    const validate = $<HTMLButtonElement>('[data-validate]');
+    const next = $<HTMLButtonElement>('[data-next]');
+    const ROUNDS = 5;
+    let rounds: Item[] = [];
+    let i = 0;
+    let score = 0;
+
+    const shuffle = <T,>(a: T[]) => {
+      const b = [...a];
+      for (let k = b.length - 1; k > 0; k--) {
+        const j = Math.floor(Math.random() * (k + 1));
+        [b[k], b[j]] = [b[j], b[k]];
+      }
+      return b;
+    };
+    const syncOut = () => (out.value = range.value);
+    range.addEventListener('input', syncOut);
+    root.querySelectorAll<HTMLButtonElement>('[data-nudge]').forEach((b) =>
+      b.addEventListener('click', () => {
+        range.value = String(Number(range.value) + Number(b.dataset.nudge));
+        syncOut();
+      })
+    );
+
+    const show = () => {
+      const item = rounds[i];
+      progress.textContent = `Question ${i + 1} sur ${ROUNDS}`;
+      question.textContent = `« ${item.title} » : en quelle année ?`;
+      range.value = '1995';
+      syncOut();
+      feedback.textContent = '';
+      validate.hidden = false;
+      next.hidden = true;
+      range.disabled = false;
+    };
+
+    const begin = () => {
+      rounds = shuffle(data).slice(0, ROUNDS);
+      i = 0;
+      score = 0;
+      start.hidden = true;
+      end.hidden = true;
+      play.hidden = false;
+      show();
+      range.focus();
+    };
+
+    play.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (validate.hidden) return;
+      const item = rounds[i];
+      const guess = Number(range.value);
+      const gap = Math.abs(guess - item.year);
+      const pts = Math.max(0, 10 - gap);
+      score += pts;
+      const verdict = gap === 0 ? 'Pile la bonne année !' : gap <= 3 ? 'Très proche !' : gap <= 8 ? 'Pas loin.' : 'Raté, mais retenez-la.';
+      feedback.innerHTML = `<strong>${verdict}</strong> C’était le ${item.date}. Écart : ${gap} an${gap > 1 ? 's' : ''}, soit ${pts} point${pts > 1 ? 's' : ''}. <a href="#date-${item.id}">Revoir sur la frise</a>`;
+      validate.hidden = true;
+      range.disabled = true;
+      next.hidden = false;
+      next.textContent = i === ROUNDS - 1 ? 'Voir mon score' : 'Question suivante';
+      next.focus();
+    });
+
+    next.addEventListener('click', () => {
+      i++;
+      if (i < ROUNDS) {
+        show();
+        range.focus();
+        return;
+      }
+      play.hidden = true;
+      end.hidden = false;
+      $('[data-score]').textContent = `${score} / ${ROUNDS * 10}`;
+      $('[data-verdict]').textContent =
+        score >= 40 ? 'Excellent : vous connaissez l’histoire du Web sur le bout des doigts.' : score >= 25 ? 'Bien joué ! Un petit tour sur la frise et ce sera parfait.' : 'La frise juste au-dessus est faite pour vous : relisez-la et retentez votre chance.';
+      $<HTMLButtonElement>('[data-restart]').focus();
+    });
+
+    $('[data-start]').addEventListener('click', begin);
+    $('[data-restart]').addEventListener('click', begin);
+  });
+</script>

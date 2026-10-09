@@ -1,0 +1,67 @@
+---
+// Illustration : le vrai site et un faux, tous les deux avec un cadenas. Le faux pend au bout d'un hameçon.
+---
+<svg viewBox="0 0 560 400" role="img" aria-labelledby="ham-title ham-desc" class="hamecon">
+  <title id="ham-title">Le vrai site et le faux ont tous les deux un cadenas</title>
+  <desc id="ham-desc">
+    En haut, une barre d'adresse affiche https://lecornetdor.be avec un cadenas : c'est le vrai site. En dessous, accrochée à
+    un hameçon, une autre barre affiche https://lecornetd0r.be, elle aussi avec un cadenas, mais un zéro remplace la lettre o.
+  </desc>
+  <!-- vrai site -->
+  <g>
+    <rect x="24" y="36" width="400" height="64" rx="32" fill="#141B2D" />
+    <g transform="translate(60 68)" fill="none" stroke="#F4B400" stroke-width="3.5" stroke-linecap="round">
+      <rect x="-11" y="-4" width="22" height="18" rx="4" fill="#F4B400" />
+      <path d="M-6 -4 v-6 a6 6 0 0 1 12 0 v6" />
+    </g>
+    <text x="88" y="75" font-family="JetBrains Mono, monospace" font-size="20" fill="#EEF1F7">https://<tspan font-weight="700" fill="#F4B400">lecornetdor.be</tspan></text>
+    <circle cx="460" cy="68" r="24" fill="#3D5FE6" />
+    <path d="M449 68 l8 8 l14 -16" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <!-- ligne de pêche et hameçon -->
+  <path d="M520 0 V 188" stroke="currentColor" stroke-width="2.5" class="line" />
+  <path d="M520 188 v26 a20 20 0 0 1 -40 0 v-8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" class="hook" />
+  <path d="M480 206 l-7 9 l11 -2" fill="currentColor" class="hook" />
+  <!-- faux site, accroché -->
+  <g class="fake">
+    <path d="M500 232 C 470 260, 430 262, 420 262" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4 5" class="line" />
+    <rect x="24" y="262" width="400" height="64" rx="32" class="fake-bar" stroke-width="3" />
+    <g transform="translate(60 294)" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round">
+      <rect x="-11" y="-4" width="22" height="18" rx="4" fill="currentColor" />
+      <path d="M-6 -4 v-6 a6 6 0 0 1 12 0 v6" />
+    </g>
+    <text x="88" y="301" font-family="JetBrains Mono, monospace" font-size="20" class="fake-t">https://<tspan font-weight="700">lecornetd</tspan><tspan font-weight="700" class="danger-f" text-decoration="underline">0</tspan><tspan font-weight="700">r.be</tspan></text>
+    <text x="298" y="358" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="16" class="danger-f">un zéro à la place du « o »</text>
+  </g>
+</svg>
+
+<style>
+  .hamecon {
+    width: 100%;
+    color: var(--ink);
+  }
+  .fake-t {
+    fill: var(--ink);
+  }
+  .fake-bar {
+    fill: var(--card);
+    stroke: var(--danger);
+  }
+  .danger-f {
+    fill: var(--danger);
+  }
+  .danger-s {
+    stroke: var(--danger);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fake {
+      transform-origin: 500px 200px;
+      animation: swing 3.2s ease-in-out 2;
+    }
+  }
+  @keyframes swing {
+    50% {
+      transform: rotate(-2deg) translateY(4px);
+    }
+  }
+</style>

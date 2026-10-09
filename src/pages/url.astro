@@ -1,0 +1,174 @@
+---
+import Subject from '../layouts/Subject.astro';
+import Cite from '../components/Cite.astro';
+import Exemple from '../components/Exemple.astro';
+import UrlLab from '../components/interactive/UrlLab.astro';
+import AdressePostale from '../components/illus/AdressePostale.astro';
+
+const S = ['mdn-url-fr', 'mdn-https', 'rfc3986', 'rfc1738', 'wikipedia-url', 'whatwg-url', 'rfc9110', 'mdn-url-en', 'mdn-percent'];
+---
+<Subject
+  n={2}
+  description="Qu'est-ce qu'une URL ? Les six parties d'une adresse Web expliquées avec un exemple, et un analyseur qui découpe n'importe quelle URL."
+  lead="Une URL indique au navigateur où se trouve une ressource et comment la demander. Comme une adresse postale, elle va du plus général au plus précis."
+  sources={S}
+>
+  <div class="definition" slot="definition">
+    <p class="kicker">En une phrase</p>
+    <p>
+      Une <strong>URL</strong> (<span lang="en">Uniform Resource Locator</span>, « localisateur uniforme de ressource ») est
+      l’adresse unique d’une ressource sur le Web : une page, une image, une vidéo<Cite list={S} ids={['mdn-url-fr', 'rfc3986']} />.
+    </p>
+  </div>
+
+  <figure class="figure" slot="illustration">
+    <div class="figure__frame">
+      <AdressePostale />
+    </div>
+    <figcaption>
+      <strong>Six parties, du plus général au plus précis.</strong> Exemple fictif : l’adresse de la carte des sauces du
+      Cornet d’Or. Schéma réalisé pour ce site.
+    </figcaption>
+  </figure>
+
+  <section class="section" aria-labelledby="origine">
+    <div class="wrap">
+      <div class="prose">
+      <p class="kicker">Un peu d’histoire</p>
+      <h2 id="origine">Une adresse pour chaque page du monde</h2>
+      <p>
+        Pour que n’importe quelle page puisse pointer vers n’importe quelle autre, le Web a besoin d’adresses écrites de la
+        même façon partout. Le format des URL est décrit dès décembre 1994 dans le RFC 1738, un document de l’IETF signé par
+        Tim Berners-Lee, Larry Masinter et Mark McCahill<Cite list={S} ids={['rfc1738', 'wikipedia-url']} />.
+      </p>
+      <p>
+        Aujourd’hui, la règle de référence est le RFC 3986, publié en 2005<Cite list={S} ids={['rfc3986', 'wikipedia-url']} />,
+        et les navigateurs appliquent le <span lang="en">URL Standard</span> du WHATWG<Cite list={S} ids={['whatwg-url', 'mdn-url-en']} />.
+        C’est ce standard qui décide, par exemple, comment votre navigateur comprend ce que vous tapez dans la barre d’adresse.
+      </p>
+    </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="parties">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Décortiquer</p>
+        <h2 id="parties">Les six parties d’une URL</h2>
+        <p>
+          Exemple : <code class="seg seg--scheme">https://</code><code class="seg seg--host">www.lecornetdor.be</code><code class="seg seg--port">:443</code><code class="seg seg--path">/menu/sauces</code><code class="seg seg--query">?piquant=oui&amp;taille=grand</code><code class="seg seg--hash">#andalouse</code>.
+          Seuls le schéma et le domaine sont indispensables.
+        </p>
+      </div>
+      <div class="table-wrap stack reveal">
+        <table>
+          <caption class="visually-hidden">Les parties d’une URL, leur rôle et un exemple</caption>
+          <thead>
+            <tr><th scope="col">Partie</th><th scope="col">Dans l’exemple</th><th scope="col">À quoi elle sert</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1. Schéma</th>
+              <td data-label="Dans l’exemple"><code class="seg seg--scheme">https://</code></td>
+              <td data-label="À quoi elle sert">Dit <strong>comment</strong> demander la ressource. HTTPS est la version chiffrée de HTTP<Cite list={S} ids={['mdn-url-fr', 'mdn-https']} />.</td>
+            </tr>
+            <tr>
+              <th scope="row">2. Domaine</th>
+              <td data-label="Dans l’exemple"><code class="seg seg--host">www.lecornetdor.be</code></td>
+              <td data-label="À quoi elle sert">Dit <strong>chez qui</strong> : le serveur qui héberge la page. Ici, <code>www</code> est un sous-domaine (voir le <a href="/noms-de-domaine/">sujet 3</a>).</td>
+            </tr>
+            <tr>
+              <th scope="row">3. Port</th>
+              <td data-label="Dans l’exemple"><code class="seg seg--port">:443</code></td>
+              <td data-label="À quoi elle sert">La « porte » d’entrée du serveur. On ne l’écrit presque jamais : par défaut, c’est 80 pour HTTP et 443 pour HTTPS<Cite list={S} ids={['mdn-url-fr', 'rfc9110']} />.</td>
+            </tr>
+            <tr>
+              <th scope="row">4. Chemin</th>
+              <td data-label="Dans l’exemple"><code class="seg seg--path">/menu/sauces</code></td>
+              <td data-label="À quoi elle sert">Dit <strong>quoi</strong> : la ressource demandée sur le serveur, rangée comme dans des dossiers<Cite list={S} ids={['mdn-url-fr', 'rfc3986']} />.</td>
+            </tr>
+            <tr>
+              <th scope="row">5. Paramètres</th>
+              <td data-label="Dans l’exemple"><code class="seg seg--query">?piquant=oui&amp;taille=grand</code></td>
+              <td data-label="À quoi elle sert">Des précisions pour le serveur, après un <code>?</code>, en paires <code>clé=valeur</code> séparées par <code>&amp;</code><Cite list={S} ids={['mdn-url-fr', 'rfc3986']} />.</td>
+            </tr>
+            <tr>
+              <th scope="row">6. Ancre</th>
+              <td data-label="Dans l’exemple"><code class="seg seg--hash">#andalouse</code></td>
+              <td data-label="À quoi elle sert">Dit <strong>où dans la page</strong>, comme un marque-page. Elle n’est jamais envoyée au serveur : seul le navigateur s’en sert<Cite list={S} ids={['mdn-url-en', 'rfc3986']} />.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Analyseur d’URL">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Tester soi-même</p>
+        <h2>Découpez n’importe quelle adresse</h2>
+        <p>
+          Collez l’adresse d’une page que vous visitez souvent. L’analyseur utilise l’outil intégré à votre navigateur, celui-là
+          même qui lit la barre d’adresse. Rien n’est envoyé sur Internet.
+        </p>
+      </div>
+      <UrlLab />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="regles">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Les pièges</p>
+        <h2 id="regles">Trois règles à connaître</h2>
+      </div>
+      <div class="grid-cards">
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">Aa</p>
+          <h3>Les majuscules comptent… parfois</h3>
+          <p>
+            Le schéma et le domaine ignorent les majuscules : <code>LeCornetDor.BE</code> et <code>lecornetdor.be</code> mènent
+            au même endroit. Le chemin, lui, peut en tenir compte<Cite list={S} ids={['rfc3986', 'whatwg-url']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">%20</p>
+          <h3>Pas d’espace, pas d’accent tels quels</h3>
+          <p>
+            Ils sont encodés avec un <code>%</code> suivi de deux chiffres : l’espace devient <code>%20</code>, le « é »
+            devient <code>%C3%A9</code><Cite list={S} ids={['rfc3986', 'mdn-percent']} />. Essayez l’exemple « Des espaces et des accents ».
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">../</p>
+          <h3>Absolue ou relative</h3>
+          <p>
+            Une URL absolue est complète. Une URL relative, comme <code>/menu/</code> ou <code>../sauces</code>, se lit à partir
+            de la page où l’on se trouve : c’est pratique pour les liens internes d’un site<Cite list={S} ids={['mdn-url-fr', 'rfc3986']} />.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Exemple du fil rouge">
+    <div class="wrap">
+      <Exemple title="Le QR code du comptoir">
+        <p>
+          Sur le comptoir du Cornet d’Or, un QR code mène à la carte. Un QR code n’est rien d’autre qu’une URL dessinée en
+          petits carrés, ici <code>https://lecornetdor.be/menu/</code>.
+        </p>
+        <p>
+          Avant d’ouvrir la page, le téléphone affiche l’adresse. C’est le bon moment pour la lire : le schéma est bien <strong>https</strong> et le domaine est bien <strong>lecornetdor.be</strong>. Le <a href="/securite/">sujet 5</a> montre pourquoi ce réflexe protège des arnaques.
+        </p>
+      </Exemple>
+    </div>
+  </section>
+
+  <ol slot="retenir">
+    <li>Une URL, c’est un schéma, un domaine, puis éventuellement un port, un chemin, des paramètres et une ancre.</li>
+    <li>Le schéma dit comment, le domaine chez qui, le chemin quoi. L’ancre n’est jamais envoyée au serveur.</li>
+    <li>Une URL ne contient ni espace ni accent tels quels : ils sont encodés, par exemple <code>%20</code> pour l’espace.</li>
+  </ol>
+</Subject>

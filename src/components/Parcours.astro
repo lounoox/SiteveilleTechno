@@ -1,0 +1,29 @@
+---
+// Les cinq sujets reliés par une ligne. Le point jaune (comme dans le support oral)
+// indique le sujet en cours ; il glisse d'un arrêt à l'autre quand on change de page.
+import { SUBJECTS } from '../config';
+
+interface Props {
+  current: number;
+}
+const { current } = Astro.props;
+---
+<nav class="parcours" aria-label="Parcours des cinq sujets">
+  <ol>
+    {
+      SUBJECTS.map((s) => (
+        <li class:list={{ 'is-done': s.n < current, 'is-current': s.n === current }}>
+          <a href={s.slug} aria-current={s.n === current ? 'step' : undefined}>
+            <span class="stop" aria-hidden="true">
+              {s.n === current ? <span class="voyage-dot">{s.n}</span> : s.n}
+            </span>
+            <span class="label">
+              <span class="visually-hidden">Sujet {s.n} : </span>
+              {s.short}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>

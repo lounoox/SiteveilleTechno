@@ -1,0 +1,80 @@
+---
+// Illustration : le premier serveur Web, un ordinateur NeXT au CERN, et sa célèbre étiquette.
+---
+<svg viewBox="0 0 560 420" role="img" aria-labelledby="ps-title ps-desc" class="illus-serveur">
+  <title id="ps-title">Le premier serveur Web, au CERN</title>
+  <desc id="ps-desc">
+    Un écran affiche la page « World Wide Web » à l'adresse info.cern.ch. À côté, l'unité centrale noire d'un ordinateur
+    NeXT porte une étiquette : « This machine is a server. DO NOT POWER IT DOWN!! ».
+  </desc>
+  <!-- sol -->
+  <ellipse cx="280" cy="392" rx="250" ry="16" fill="currentColor" opacity="0.08" />
+  <!-- écran -->
+  <rect x="24" y="40" width="300" height="230" rx="18" fill="#141B2D" />
+  <rect x="40" y="56" width="268" height="186" rx="8" fill="#FCFDFE" />
+  <rect x="40" y="56" width="268" height="26" rx="8" fill="#1E2740" />
+  <rect x="40" y="70" width="268" height="12" fill="#1E2740" />
+  <circle cx="54" cy="69" r="4.5" fill="#F4B400" />
+  <circle cx="68" cy="69" r="4.5" fill="#AEB8CE" />
+  <rect x="82" y="62" width="150" height="14" rx="7" fill="#33405F" />
+  <text x="157" y="73" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#EEF1F7">info.cern.ch</text>
+  <text x="56" y="110" font-family="Bricolage Grotesque Variable, sans-serif" font-weight="800" font-size="21" fill="#141B2D">World Wide Web</text>
+  <rect x="56" y="122" width="232" height="6" rx="3" fill="#D8DEE9" />
+  <rect x="56" y="136" width="200" height="6" rx="3" fill="#D8DEE9" />
+  <rect x="56" y="150" width="218" height="6" rx="3" fill="#D8DEE9" />
+  <rect x="56" y="172" width="86" height="7" rx="3.5" fill="#2747C9" />
+  <rect x="150" y="172" width="64" height="7" rx="3.5" fill="#2747C9" />
+  <rect x="56" y="188" width="120" height="7" rx="3.5" fill="#2747C9" />
+  <rect x="56" y="210" width="190" height="6" rx="3" fill="#D8DEE9" />
+  <!-- pied de l'écran -->
+  <path d="M150 270 h48 l14 64 h-76 z" fill="#1E2740" />
+  <rect x="104" y="332" width="140" height="14" rx="7" fill="#141B2D" />
+  <!-- clavier -->
+  <rect x="64" y="356" width="236" height="22" rx="6" fill="#33405F" />
+  <g fill="#AEB8CE" opacity="0.6">
+    <rect x="76" y="362" width="18" height="4" rx="2" /><rect x="100" y="362" width="18" height="4" rx="2" />
+    <rect x="124" y="362" width="18" height="4" rx="2" /><rect x="148" y="362" width="18" height="4" rx="2" />
+    <rect x="172" y="362" width="18" height="4" rx="2" /><rect x="196" y="362" width="18" height="4" rx="2" />
+    <rect x="220" y="362" width="18" height="4" rx="2" /><rect x="244" y="362" width="38" height="4" rx="2" />
+    <rect x="100" y="370" width="160" height="4" rx="2" />
+  </g>
+  <!-- unité centrale NeXT (cube) -->
+  <g class="illus-serveur__cube">
+    <path d="M352 170 l92 -36 l92 36 v190 l-92 32 l-92 -32 z" fill="#141B2D" />
+    <path d="M352 170 l92 -36 l92 36 l-92 34 z" fill="#33405F" />
+    <path d="M444 204 l92 -34 v190 l-92 32 z" fill="#1E2740" />
+    <!-- logo NeXT stylisé -->
+    <path d="M492 232 l18 -7 v24 l-18 7 z" fill="#F4B400" opacity="0.9" />
+    <circle cx="465" cy="356" r="4" fill="#3D5FE6" />
+    <!-- étiquette -->
+    <g transform="rotate(-6 398 290)">
+      <rect x="350" y="246" width="100" height="78" rx="4" fill="#FCFDFE" />
+      <rect x="380" y="238" width="40" height="14" rx="2" fill="#F4B400" opacity="0.85" />
+      <text font-family="JetBrains Mono, monospace" font-size="9.2" fill="#141B2D">
+        <tspan x="358" y="270">This machine</tspan>
+        <tspan x="358" y="283">is a server.</tspan>
+        <tspan x="358" y="299" font-weight="700" fill="#B42318">DO NOT POWER</tspan>
+        <tspan x="358" y="312" font-weight="700" fill="#B42318">IT DOWN!!</tspan>
+      </text>
+    </g>
+  </g>
+  <!-- câble réseau qui part vers le monde -->
+  <path d="M536 300 C 560 300, 556 240, 530 220" fill="none" stroke="#F4B400" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10" class="illus-serveur__cable" />
+</svg>
+
+<style>
+  .illus-serveur {
+    width: 100%;
+    color: var(--ink);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .illus-serveur__cable {
+      animation: flow 1.6s linear 3;
+    }
+  }
+  @keyframes flow {
+    to {
+      stroke-dashoffset: -24;
+    }
+  }
+</style>

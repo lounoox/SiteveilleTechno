@@ -1,0 +1,101 @@
+---
+import Logo from './Logo.astro';
+import { SITE, SUBJECTS } from '../config';
+
+const path = Astro.url.pathname;
+const links = [
+  ...SUBJECTS.map((s) => ({ href: s.slug, label: s.short, num: String(s.n) })),
+  { href: '/sources/', label: 'Sources', num: '' },
+];
+---
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="/">
+      <Logo outline />
+      <span>
+        {SITE.name}
+        <small>Veille Web · {SITE.author}</small>
+        <span class="visually-hidden"> (accueil)</span>
+      </span>
+    </a>
+
+    <button
+      class="icon-btn menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="main-nav"
+      data-menu-btn
+    >
+      <span class="visually-hidden">Ouvrir le menu</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+        <path class="l1" d="M4 7h16" /><path class="l2" d="M4 12h16" /><path class="l3" d="M4 17h16" />
+      </svg>
+    </button>
+
+    <nav class="main-nav" id="main-nav" aria-label="Menu principal" data-menu>
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>
+                {l.num && <span class="num" aria-hidden="true">{l.num}</span>}
+                {l.num ? <span><span class="visually-hidden">Sujet {l.num} : </span>{l.label}</span> : l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+      <span class="visually-hidden">Thème sombre</span>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2" />
+        <path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" />
+      </svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  // Menu mobile
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  if (btn && menu) {
+    const label = btn.querySelector('.visually-hidden');
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      menu.classList.toggle('is-open', open);
+      if (label) label.textContent = open ? 'Fermer le menu' : 'Ouvrir le menu';
+    };
+    btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        btn.focus();
+      }
+    });
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+  }
+
+  // Thème clair / sombre (le choix est mémorisé sur cet appareil)
+  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const root = document.documentElement;
+  const isDark = () =>
+    root.dataset.theme ? root.dataset.theme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const sync = () => toggle?.setAttribute('aria-pressed', String(isDark()));
+  sync();
+  toggle?.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {}
+    sync();
+  });
+</script>

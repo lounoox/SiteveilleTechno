@@ -1,0 +1,229 @@
+---
+import Subject from '../layouts/Subject.astro';
+import Cite from '../components/Cite.astro';
+import Exemple from '../components/Exemple.astro';
+import ArbreDns from '../components/illus/ArbreDns.astro';
+import DnsVoyage from '../components/interactive/DnsVoyage.astro';
+import DnsLookup from '../components/interactive/DnsLookup.astro';
+
+const S = [
+  'mdn-domain',
+  'cloudflare-dns-servers',
+  'iana-root-db',
+  'rfc1035',
+  'dnsbelgium-valid',
+  'gandi-be',
+  'dnsbelgium-home',
+  'dnsbelgium-history',
+  'pir-icann',
+  'ccdcoe-icann',
+  'eurodns-resolution',
+  'rfc5737',
+  'verisign-q2-2026',
+  'dnib-q2-2026',
+  'dnsbelgium-ar-2025',
+  'dnsbelgium-news-2025',
+  'iana-root-servers',
+  'rootservers-org',
+  'icannwiki-be',
+  'chm-1980s',
+  'isoc-brief',
+];
+---
+<Subject
+  n={3}
+  description="Comment un nom de domaine devient une adresse IP : l'arbre du DNS, qui gère quoi, le voyage d'une requête étape par étape, et un vrai serveur DNS à interroger."
+  lead="Sur Internet, les ordinateurs se trouvent grâce à des adresses IP, des suites de chiffres. Les noms de domaine existent pour les humains ; le DNS fait la traduction, comme un annuaire."
+  sources={S}
+>
+  <div class="definition" slot="definition">
+    <p class="kicker">En une phrase</p>
+    <p>
+      Un <strong>nom de domaine</strong> est le nom lisible d’un site, comme <code>lecornetdor.be</code> ; le <strong>DNS</strong> (<span lang="en">Domain Name System</span>) est l’annuaire mondial qui le traduit en adresse IP,
+      l’adresse en chiffres du serveur<Cite list={S} ids={['mdn-domain', 'cloudflare-dns-servers']} />.
+    </p>
+  </div>
+
+  <figure class="figure" slot="illustration">
+    <div class="figure__frame">
+      <ArbreDns />
+    </div>
+    <figcaption>
+      <strong>L’arbre des noms.</strong> Chaque niveau dépend de celui du dessus, jusqu’à la racine. Schéma réalisé pour ce
+      site<Cite list={S} ids={['mdn-domain', 'iana-root-db']} />.
+    </figcaption>
+  </figure>
+
+  <section class="section" aria-labelledby="lire">
+    <div class="wrap">
+      <div class="prose">
+        <p class="kicker">Lire un nom</p>
+        <h2 id="lire">Un nom se lit de droite à gauche</h2>
+        <p>
+          Le DNS a été inventé en 1983 par Paul Mockapetris, quand Internet devenait trop grand pour une simple liste de
+          noms<Cite list={S} ids={['chm-1980s', 'isoc-brief']} />. Il range les noms dans un arbre.
+        </p>
+        <p>
+          Dans <code>www.lecornetdor.be</code>, la partie la plus importante est à la fin. On lit de droite à gauche, du plus
+          général au plus précis<Cite list={S} ids={['mdn-domain', 'cloudflare-dns-servers']} /> :
+        </p>
+        <ol>
+          <li><strong>La racine</strong>, un point invisible tout au bout, le sommet de l’arbre.</li>
+          <li><strong>L’extension</strong> (<abbr title="Top-Level Domain" lang="en">TLD</abbr>, domaine de premier niveau) : <code>.be</code>.</li>
+          <li><strong>Le nom choisi</strong> par la friterie : <code>lecornetdor</code>, unique sous <code>.be</code>.</li>
+          <li><strong>Le sous-domaine</strong>, librement créé par le propriétaire : <code>www</code>, ou par exemple <code>commande</code>.</li>
+        </ol>
+        <p>
+          Chaque partie entre deux points compte au maximum 63 caractères<Cite list={S} ids={['rfc1035', 'dnsbelgium-valid']} />.
+          Un nom en <code>.be</code> peut contenir des lettres, des chiffres et des traits d’union (jamais au début ni à la fin),
+          et même des lettres accentuées comme é ou ç<Cite list={S} ids={['dnsbelgium-valid', 'gandi-be']} />.
+        </p>
+      </div>
+
+      <div class="table-wrap stack reveal" style="margin-top:2rem">
+        <table>
+          <caption class="visually-hidden">Les grandes familles d’extensions</caption>
+          <thead>
+            <tr><th scope="col">Famille</th><th scope="col">Exemples</th><th scope="col">Pour qui ?</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Nationales (ccTLD)</th>
+              <td data-label="Exemples"><code>.be</code> <code>.fr</code> <code>.nl</code></td>
+              <td data-label="Pour qui ?">Deux lettres, un pays ou un territoire<Cite list={S} ids={['iana-root-db', 'mdn-domain']} />.</td>
+            </tr>
+            <tr>
+              <th scope="row">Génériques (gTLD)</th>
+              <td data-label="Exemples"><code>.com</code> <code>.org</code> <code>.net</code></td>
+              <td data-label="Pour qui ?">Ouvertes à tous, partout dans le monde<Cite list={S} ids={['iana-root-db', 'mdn-domain']} />.</td>
+            </tr>
+            <tr>
+              <th scope="row">Géographiques</th>
+              <td data-label="Exemples"><code>.brussels</code> <code>.vlaanderen</code></td>
+              <td data-label="Pour qui ?">Une ville ou une région. En Belgique, elles sont lancées en 2014 et gérées par DNS Belgium<Cite list={S} ids={['dnsbelgium-home', 'dnsbelgium-history']} />.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="acteurs">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Qui gère quoi ?</p>
+        <h2 id="acteurs">Quatre acteurs, du monde à la friterie</h2>
+        <p>On ne « possède » pas un nom de domaine : on le loue pour une durée, en général un an, renouvelable<Cite list={S} ids={['mdn-domain', 'gandi-be']} />.</p>
+      </div>
+      <ol class="steps">
+        <li>
+          <strong>ICANN</strong>
+          <span>Coordonne le DNS au niveau mondial et les extensions. Organisation fondée le 18 septembre 1998<Cite list={S} ids={['pir-icann', 'ccdcoe-icann']} />.</span>
+        </li>
+        <li>
+          <strong>Le registre</strong>
+          <span>Gère une extension et sa base de noms. Pour <code>.be</code>, <code>.brussels</code> et <code>.vlaanderen</code> : DNS Belgium<Cite list={S} ids={['dnsbelgium-home', 'iana-root-db']} />.</span>
+        </li>
+        <li>
+          <strong>Le bureau d’enregistrement</strong>
+          <span>Le « registrar » : l’entreprise qui vend la location du nom au public et gère les réglages<Cite list={S} ids={['mdn-domain', 'gandi-be']} />.</span>
+        </li>
+        <li class="is-gold">
+          <strong>Le titulaire</strong>
+          <span>Vous, ou la friterie : celui qui loue le nom et décide vers quel serveur il mène.</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Voyage d’une requête DNS">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Étape par étape</p>
+        <h2>Que se passe-t-il quand on tape une adresse ?</h2>
+        <p>
+          En une fraction de seconde, la question passe par plusieurs serveurs : un résolveur, la racine, le serveur de
+          l’extension, puis celui du domaine<Cite list={S} ids={['cloudflare-dns-servers', 'eurodns-resolution']} />.
+          L’adresse finale de l’exemple, 203.0.113.42, fait partie d’un bloc réservé aux documentations<Cite list={S} ids={['rfc5737', 'eurodns-resolution']} />.
+        </p>
+      </div>
+      <DnsVoyage />
+    </div>
+  </section>
+
+  <section class="section" aria-label="Interroger le DNS">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Pour de vrai</p>
+        <h2>Posez la question à un vrai résolveur</h2>
+        <p>
+          Cette fois, la question part réellement sur Internet. Comparez un vrai site, comme <code>dnsbelgium.be</code>, et
+          notre friterie inventée, <code>lecornetdor.be</code>.
+        </p>
+      </div>
+      <DnsLookup />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="chiffres">
+    <div class="wrap">
+      <div class="band reveal">
+        <p class="kicker">Ordres de grandeur</p>
+        <h2 id="chiffres">Le DNS en chiffres</h2>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat__value">401,6 M</span>
+            <span class="stat__label">noms de domaine enregistrés dans le monde, fin juin 2026</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['verisign-q2-2026', 'dnib-q2-2026']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">1,7 M</span>
+            <span class="stat__label">noms en .be : 1 701 999 fin 2025, 1 712 815 le 7 octobre 2026</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['dnsbelgium-ar-2025', 'dnsbelgium-home']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">207 776</span>
+            <span class="stat__label">nouveaux noms en .be enregistrés pendant l’année 2025</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['dnsbelgium-ar-2025', 'dnsbelgium-news-2025']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">13</span>
+            <span class="stat__label">serveurs racine, nommés de A à M, gérés par 12 organisations</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['iana-root-servers', 'rootservers-org']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">2 048</span>
+            <span class="stat__label">copies de ces serveurs racine en service dans le monde, le 7 octobre 2026</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['rootservers-org', 'iana-root-servers']} /></span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">1988</span>
+            <span class="stat__label">création du .be, d’abord géré à la KU Leuven ; DNS Belgium prend le relais en 2000</span>
+            <span class="stat__src">Sources<Cite list={S} ids={['dnsbelgium-history', 'icannwiki-be']} /></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Exemple du fil rouge">
+    <div class="wrap">
+      <Exemple title="lecornetdor.be est-il libre ?">
+        <p>
+          Tapez <code>lecornetdor.be</code> dans l’outil ci-dessus : le DNS répond <strong>NXDOMAIN</strong>, « ce nom n’existe
+          pas ». C’est le serveur du <code>.be</code> qui l’affirme. Le nom est libre.
+        </p>
+        <p>
+          La friterie peut donc le louer chez un bureau d’enregistrement, pour un an renouvelable, puis indiquer dans le DNS
+          l’adresse IP du serveur qui héberge son site. Ensuite, n’importe quel navigateur du monde pourra la trouver.
+        </p>
+      </Exemple>
+    </div>
+  </section>
+
+  <ol slot="retenir">
+    <li>Un nom de domaine se lit de droite à gauche : racine, extension (<code>.be</code>), nom, sous-domaine.</li>
+    <li>Le DNS est un annuaire réparti : résolveur, racine, serveur de l’extension, puis serveur du domaine.</li>
+    <li>Un nom ne s’achète pas, il se loue : l’ICANN coordonne, le registre (DNS Belgium) gère, le registrar vend.</li>
+  </ol>
+</Subject>

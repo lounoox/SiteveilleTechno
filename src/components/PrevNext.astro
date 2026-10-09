@@ -1,0 +1,38 @@
+---
+import { SUBJECTS } from '../config';
+
+interface Props {
+  current: number;
+}
+const { current } = Astro.props;
+const prev = SUBJECTS.find((s) => s.n === current - 1);
+const next = SUBJECTS.find((s) => s.n === current + 1);
+---
+<nav class="prev-next" aria-label="Sujet précédent et suivant">
+  {
+    prev ? (
+      <a href={prev.slug} rel="prev">
+        <span class="dir">← Sujet {prev.n}</span>
+        <span class="t">{prev.title}</span>
+      </a>
+    ) : (
+      <a href="/">
+        <span class="dir">← Accueil</span>
+        <span class="t">Retour au parcours</span>
+      </a>
+    )
+  }
+  {
+    next ? (
+      <a class="next" href={next.slug} rel="next">
+        <span class="dir">Sujet {next.n} →</span>
+        <span class="t">{next.title}</span>
+      </a>
+    ) : (
+      <a class="next" href="/sources/">
+        <span class="dir">Pour finir →</span>
+        <span class="t">Toutes les sources</span>
+      </a>
+    )
+  }
+</nav>

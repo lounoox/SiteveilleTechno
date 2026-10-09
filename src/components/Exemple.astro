@@ -1,0 +1,17 @@
+---
+// Encadré « fil rouge » : Le Cornet d'Or, la friterie fictive qui passe en ligne.
+import Logo from './Logo.astro';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<aside class="exemple reveal" aria-label={`Exemple du fil rouge : ${title}`}>
+  <Logo class="exemple__logo" />
+  <div>
+    <p class="kicker">Le fil rouge · exemple fictif</p>
+    <h3>{title}</h3>
+    <slot />
+  </div>
+</aside>

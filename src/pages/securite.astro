@@ -1,0 +1,180 @@
+---
+import Subject from '../layouts/Subject.astro';
+import Cite from '../components/Cite.astro';
+import Exemple from '../components/Exemple.astro';
+import Hamecon from '../components/illus/Hamecon.astro';
+import WifiEspion from '../components/interactive/WifiEspion.astro';
+import Hameconnage from '../components/interactive/Hameconnage.astro';
+
+const S = [
+  'mdn-https',
+  'rfc9110',
+  'w3techs-https',
+  'almanac-2025',
+  'chromium-lock',
+  'helpnet-lock',
+  'bx1-safeonweb',
+  'belgium-safeonweb',
+  'police-safeonweb',
+  'cnil-mdp',
+  'cnil-deliberation',
+  'microsoft-mfa',
+  'slaw-mfa',
+];
+---
+<Subject
+  n={5}
+  description="La sécurité sur le Web : ce que protège HTTPS, pourquoi le cadenas ne suffit pas, comment repérer un faux lien et bien protéger ses comptes. Avec deux démonstrations interactives."
+  lead="Sur le Web, vos données voyagent entre votre appareil et des serveurs. Se protéger, c’est chiffrer le trajet (HTTPS), vérifier à qui l’on parle (le bon domaine) et protéger ses comptes."
+  sources={S}
+>
+  <div class="definition" slot="definition">
+    <p class="kicker">En une phrase</p>
+    <p>
+      <strong>HTTPS</strong> est la version chiffrée de HTTP : il protège le contenu échangé entre le navigateur et le
+      serveur, mais il ne garantit pas que le site soit honnête<Cite list={S} ids={['mdn-https', 'chromium-lock']} />.
+    </p>
+  </div>
+
+  <figure class="figure" slot="illustration">
+    <div class="figure__frame">
+      <Hamecon />
+    </div>
+    <figcaption>
+      <strong>Le cadenas ne dit pas tout.</strong> Un faux site peut lui aussi être en HTTPS : c’est le nom de domaine qu’il
+      faut lire<Cite list={S} ids={['chromium-lock', 'helpnet-lock']} />. Exemple fictif, illustration réalisée pour ce site.
+    </figcaption>
+  </figure>
+
+  <section class="section" aria-labelledby="https">
+    <div class="wrap">
+      <div class="prose">
+        <p class="kicker">Le trajet</p>
+        <h2 id="https">HTTPS : un tunnel chiffré</h2>
+        <p>
+          Avec HTTP, les données circulent en clair : toute personne placée sur le chemin, par exemple sur un Wi-Fi public,
+          peut les lire. HTTPS chiffre toute la communication grâce au protocole TLS, et utilise par défaut le port
+          443<Cite list={S} ids={['mdn-https', 'rfc9110']} />.
+        </p>
+        <p>
+          C’est devenu la norme : plus de neuf sites sur dix s’ouvrent aujourd’hui en HTTPS. W3Techs mesure 90,2 % des sites
+          en octobre 2026, et le Web Almanac 97,3 % des pages d’accueil sur mobile en 2025<Cite list={S} ids={['w3techs-https', 'almanac-2025']} />.
+        </p>
+      </div>
+      <div style="margin-top:2rem">
+        <WifiEspion />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cadenas">
+    <div class="wrap">
+      <div class="attention reveal">
+        <p class="kicker">Idée reçue</p>
+        <h2 id="cadenas" style="font-size:clamp(1.5rem,1.2rem + 1.4vw,2.2rem);margin:0.3rem 0 0.6rem">Le cadenas ne veut pas dire « site honnête »</h2>
+        <p>
+          Le cadenas signifiait seulement « connexion chiffrée ». Pourtant, une étude de Google de 2021 a montré que seuls 11 %
+          des participants comprenaient ce sens exact. Comme les sites d’hameçonnage utilisent eux aussi HTTPS, Chrome a
+          remplacé le cadenas par une icône de réglages en septembre 2023, avec sa version 117<Cite list={S} ids={['chromium-lock', 'helpnet-lock']} />.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="phishing">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Hameçonnage</p>
+        <h2 id="phishing">Le piège le plus courant : le faux lien</h2>
+        <p>
+          L’hameçonnage, ou <span lang="en">phishing</span>, est un faux message qui imite une entreprise ou un service connu
+          pour vous faire cliquer, puis donner un mot de passe ou payer. En 2024, les Belges ont transféré plus de 9 millions
+          de messages suspects à <strong>suspect@safeonweb.be</strong>, en moyenne 25 900 par jour<Cite list={S} ids={['bx1-safeonweb', 'belgium-safeonweb']} />.
+        </p>
+      </div>
+      <div class="grid-cards" style="margin-bottom:2rem">
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">24 h</p>
+          <h3>L’urgence</h3>
+          <p>« Dernier rappel », « dans 24 h » : la pression empêche de réfléchir.</p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">@</p>
+          <h3>Le domaine</h3>
+          <p>Il ressemble au vrai, à une lettre près, ou le vrai nom est placé au début pour tromper.</p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">***</p>
+          <h3>La demande</h3>
+          <p>Un mot de passe, un code reçu par SMS, des frais à payer : un vrai service ne les demande pas ainsi.</p>
+        </article>
+      </div>
+      <Hameconnage />
+      <p class="lab__hint" style="margin-top:1rem">
+        En Belgique, un message douteux se transfère à suspect@safeonweb.be : le Centre pour la Cybersécurité Belgique
+        l’analyse et peut bloquer les liens dangereux<Cite list={S} ids={['police-safeonweb', 'bx1-safeonweb']} />.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="comptes">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Les comptes</p>
+        <h2 id="comptes">Des mots de passe solides, et une deuxième clé</h2>
+        <p>Même avec HTTPS, un mot de passe trop simple ou réutilisé reste la porte d’entrée la plus facile.</p>
+      </div>
+      <div class="grid-cards">
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">12+</p>
+          <h3>Assez long</h3>
+          <p>
+            La CNIL donne des exemples équivalents : au moins 12 caractères mêlant majuscules, minuscules, chiffres et caractères
+            spéciaux, ou au moins 14 caractères sans caractère spécial obligatoire<Cite list={S} ids={['cnil-mdp', 'cnil-deliberation']} />.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">7 mots</p>
+          <h3>Ou une phrase de passe</h3>
+          <p>
+            Autre option : une phrase d’au moins 7 mots<Cite list={S} ids={['cnil-mdp', 'cnil-deliberation']} />, plus facile à
+            retenir. Par exemple : <code>cornet-sauce-pluie-samedi-tram-or-liège</code>.
+          </p>
+        </article>
+        <article class="mini-card reveal">
+          <p class="big" aria-hidden="true">99,9 %</p>
+          <h3>La double authentification</h3>
+          <p>
+            Un code reçu sur le téléphone en plus du mot de passe. Selon Microsoft, elle bloque plus de 99,9 % des attaques
+            automatisées contre les comptes<Cite list={S} ids={['microsoft-mfa', 'slaw-mfa']} />.
+          </p>
+        </article>
+      </div>
+      <p class="prose" style="margin-top:1.5rem">
+        Un mot de passe différent pour chaque site évite qu’une fuite sur un site ouvre tous les autres. Pour s’en souvenir, un
+        gestionnaire de mots de passe fait le travail.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Exemple du fil rouge">
+    <div class="wrap">
+      <Exemple title="Ce que fait Le Cornet d’Or pour ses clients">
+        <p>
+          Le site de la friterie est servi uniquement en <strong>HTTPS</strong>. Il ne demande jamais de mot de passe par
+          e-mail ni par SMS, et ses messages ne contiennent que des liens vers <strong>lecornetdor.be</strong>.
+        </p>
+        <p>
+          Son site est statique, généré à l’avance par un SSG, comme celui-ci : il n’a ni base de données ni page de connexion
+          à attaquer. Et s’il reçoit un faux message à son nom, il le transfère à suspect@safeonweb.be.
+        </p>
+      </Exemple>
+    </div>
+  </section>
+
+  <ol slot="retenir">
+    <li>HTTPS chiffre le trajet des données. Le cadenas ne dit pas que le site est honnête.</li>
+    <li>Avant de cliquer, lisez le domaine de droite à gauche, jusqu’au premier « / ».</li>
+    <li>Des mots de passe longs et différents, plus la double authentification : vos comptes sont bien mieux protégés.</li>
+  </ol>
+</Subject>

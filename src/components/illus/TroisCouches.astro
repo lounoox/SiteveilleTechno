@@ -1,0 +1,49 @@
+---
+// Illustration : une page Web = trois couches empilées (HTML, CSS, JavaScript).
+const layers = [
+  { y: 250, fill: '#141B2D', stroke: '#33405F', title: 'HTML', sub: 'la structure : le contenu de la carte', text: '#EEF1F7', subc: '#AEB8CE' },
+  { y: 160, fill: '#3D5FE6', stroke: '#1F3BA8', title: 'CSS', sub: 'l’apparence : couleurs, polices, mise en page', text: '#FFFFFF', subc: '#E3E8FC' },
+  { y: 70, fill: '#F4B400', stroke: '#B98600', title: 'JavaScript', sub: 'le comportement : les clics, le total', text: '#141B2D', subc: '#3A2C00' },
+];
+---
+<svg viewBox="0 0 560 400" role="img" aria-labelledby="illus-couches-title illus-couches-desc" class="couches-illus">
+  <title id="illus-couches-title">Les trois couches d'une page Web</title>
+  <desc id="illus-couches-desc">
+    Trois plaques empilées. En bas, HTML, la structure. Au milieu, CSS, l'apparence. En haut, JavaScript, le comportement.
+  </desc>
+  <ellipse cx="280" cy="372" rx="240" ry="16" fill="currentColor" opacity="0.08" />
+  {
+    layers.map((l, i) => (
+      <g class="couche" style={`--d:${(2 - i) * 0.15}s`}>
+        <path d={`M40 ${l.y + 40} L280 ${l.y} L520 ${l.y + 40} L280 ${l.y + 80} Z`} fill={l.fill} stroke={l.stroke} stroke-width="3" />
+        <path d={`M40 ${l.y + 40} L280 ${l.y + 80} L280 ${l.y + 96} L40 ${l.y + 56} Z`} fill={l.stroke} />
+        <path d={`M520 ${l.y + 40} L280 ${l.y + 80} L280 ${l.y + 96} L520 ${l.y + 56} Z`} fill={l.stroke} opacity="0.8" />
+        <text x="280" y={l.y + 40} text-anchor="middle" font-family="Bricolage Grotesque Variable, sans-serif" font-weight="800" font-size="26" fill={l.text}>
+          {l.title}
+        </text>
+        <text x="280" y={l.y + 62} text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="13" fill={l.subc}>
+          {l.sub}
+        </text>
+      </g>
+    ))
+  }
+</svg>
+
+<style>
+  .couches-illus {
+    width: 100%;
+    color: var(--ink);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .couche {
+      animation: stack 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+      animation-delay: var(--d);
+    }
+  }
+  @keyframes stack {
+    from {
+      transform: translateY(-40px);
+      opacity: 0;
+    }
+  }
+</style>

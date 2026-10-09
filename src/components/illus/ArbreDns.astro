@@ -1,0 +1,107 @@
+---
+// Illustration : l'arbre des noms de domaine, de la racine jusqu'à www.lecornetdor.be.
+---
+<svg viewBox="0 0 600 440" role="img" aria-labelledby="arbre-title arbre-desc" class="arbre">
+  <title id="arbre-title">L'arbre des noms de domaine</title>
+  <desc id="arbre-desc">
+    Tout en haut, la racine, notée par un point. En dessous, les extensions : .com, .org, .be et .brussels. Sous .be, les
+    domaines dnsbelgium.be et lecornetdor.be. Sous lecornetdor.be, le sous-domaine www.lecornetdor.be. Le chemin de la racine
+    jusqu'à www.lecornetdor.be est surligné en jaune.
+  </desc>
+  <g class="arbre__links" fill="none" stroke-width="3">
+    <path d="M300 64 C 300 100, 90 100, 90 140" />
+    <path d="M300 64 C 300 100, 220 100, 220 140" />
+    <path d="M300 64 C 300 100, 510 100, 510 140" />
+    <path d="M370 172 C 370 210, 250 210, 250 250" />
+    <path d="M90 172 C 90 210, 90 210, 90 250" />
+    <path class="hot" d="M300 64 C 300 100, 370 100, 370 140" />
+    <path class="hot" d="M370 172 C 370 210, 440 210, 440 250" />
+    <path class="hot" d="M440 282 C 440 320, 440 320, 440 352" />
+  </g>
+
+  <g class="arbre__nodes" font-family="JetBrains Mono, monospace" font-weight="700" text-anchor="middle">
+    <circle cx="300" cy="40" r="26" class="root" />
+    <text x="300" y="50" font-size="30" class="root-t">.</text>
+    <text x="352" y="46" font-size="13" text-anchor="start" class="lbl">racine</text>
+
+    <rect x="50" y="140" width="80" height="34" rx="17" class="n" /><text x="90" y="162" font-size="15" class="t">.com</text>
+    <rect x="180" y="140" width="80" height="34" rx="17" class="n" /><text x="220" y="162" font-size="15" class="t">.org</text>
+    <rect x="330" y="140" width="80" height="34" rx="17" class="hot-n" /><text x="370" y="162" font-size="15" class="hot-t">.be</text>
+    <rect x="455" y="140" width="110" height="34" rx="17" class="n" /><text x="510" y="162" font-size="15" class="t">.brussels</text>
+
+    <rect x="20" y="250" width="140" height="34" rx="17" class="n" /><text x="90" y="272" font-size="13" class="t">google.com</text>
+    <rect x="175" y="250" width="150" height="34" rx="17" class="n" /><text x="250" y="272" font-size="13" class="t">dnsbelgium.be</text>
+    <rect x="355" y="250" width="170" height="34" rx="17" class="hot-n" /><text x="440" y="272" font-size="13" class="hot-t">lecornetdor.be</text>
+
+    <rect x="335" y="352" width="210" height="38" rx="19" class="hot-n strong" /><text x="440" y="376" font-size="13.5" class="hot-t">www.lecornetdor.be</text>
+  </g>
+
+  <g font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" class="lvl">
+    <text x="16" y="120">EXTENSIONS (TLD)</text>
+    <text x="16" y="236">DOMAINES</text>
+    <text x="16" y="346">SOUS-DOMAINE</text>
+  </g>
+
+  <g class="arbre__read" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">
+    <text x="300" y="428" text-anchor="middle">www  ←  lecornetdor  ←  be  ←  .   (on lit de droite à gauche)</text>
+  </g>
+</svg>
+
+<style>
+  .arbre {
+    width: 100%;
+  }
+  .arbre__links path {
+    stroke: var(--line);
+  }
+  .arbre__links path.hot {
+    stroke: var(--gold);
+    stroke-width: 6;
+    stroke-linecap: round;
+  }
+  .root {
+    fill: var(--navy);
+  }
+  .root-t {
+    fill: var(--gold);
+  }
+  .lbl,
+  .lvl {
+    fill: var(--muted);
+  }
+  .n {
+    fill: var(--card);
+    stroke: var(--line);
+    stroke-width: 2;
+  }
+  .t {
+    fill: var(--ink);
+  }
+  .hot-n {
+    fill: var(--gold);
+    stroke: var(--gold-deep);
+    stroke-width: 2;
+  }
+  .hot-n.strong {
+    stroke: #141b2d;
+    stroke-width: 3;
+  }
+  .hot-t {
+    fill: #141b2d;
+  }
+  .arbre__read text {
+    fill: var(--blue);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .arbre__links path.hot {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: draw 1.4s 0.4s ease-out forwards;
+    }
+  }
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

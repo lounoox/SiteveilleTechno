@@ -1,0 +1,209 @@
+---
+import Base from '../layouts/Base.astro';
+import SourceList from '../components/SourceList.astro';
+import { SITE, SUBJECTS } from '../config';
+import { SOURCES, type Topic } from '../data/sources';
+
+const groups: { topic: Topic; title: string; href?: string }[] = [
+  ...SUBJECTS.map((s) => ({
+    topic: (['timeline', 'url', 'domaines', 'standards', 'securite'] as Topic[])[s.n - 1],
+    title: `Sujet ${s.n} · ${s.title}`,
+    href: s.slug,
+  })),
+  { topic: 'accueil', title: 'Page d’accueil · Le Web en chiffres', href: '/' },
+];
+const byTopic = (t: Topic) => Object.keys(SOURCES).filter((id) => SOURCES[id].topics.includes(t));
+const total = Object.keys(SOURCES).length;
+---
+<Base title="Sources et outils" description="Toutes les sources du site, les outils utilisés (dont l'assistant IA), l'accessibilité et la fabrication du site.">
+  <section class="subject-hero">
+    <div class="wrap">
+      <div class="subject-hero__text" style="max-width:60rem">
+        <p class="kicker">Sources · Outils · Accessibilité</p>
+        <h1>Sources et outils</h1>
+        <p class="lead">
+          Ce site a été réalisé par <strong>{SITE.author}</strong> ({SITE.school}, {SITE.course}). Il s’appuie sur {total}
+          sources, toutes consultées en octobre 2026. Chaque information a été recoupée dans au moins deux d’entre elles.
+        </p>
+        <nav aria-label="Sur cette page" class="chips">
+          <a class="chip" href="#liste">Les sources</a>
+          <a class="chip" href="#outils">Les outils et l’IA</a>
+          <a class="chip" href="#accessibilite">L’accessibilité</a>
+          <a class="chip" href="#fabrication">La fabrication</a>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="liste" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">{total} sources</p>
+        <h2 id="liste">Les sources, sujet par sujet</h2>
+        <p>Une même source peut servir à plusieurs sujets. Sur chaque page, un petit numéro à côté d’une information renvoie à la source correspondante.</p>
+      </div>
+      <div class="groups">
+        {
+          groups.map((g, gi) => (
+            <details class="group" open={gi === 0}>
+              <summary>
+                <span class="group__title">{g.title}</span>
+                <span class="pill">{byTopic(g.topic).length} sources</span>
+              </summary>
+              <div class="group__body">
+                {g.href && <p><a href={g.href}>Ouvrir la page</a></p>}
+                <SourceList list={byTopic(g.topic)} idPrefix={`${g.topic}-`} />
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="outils">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Transparence</p>
+        <h2 id="outils">Les outils utilisés, dont l’IA</h2>
+      </div>
+      <div class="grid-cards">
+        <article class="mini-card">
+          <p class="kicker">Assistant IA</p>
+          <h3>Claude (Anthropic), dans Claude Code</h3>
+          <p>
+            Utilisé pour rechercher et recouper les sources, proposer la structure du site, écrire le code (Astro, CSS,
+            JavaScript) et un premier jet des textes. Les textes ont ensuite été relus et chaque information a été vérifiée
+            dans les sources listées sur cette page. Le détail est dans mon carnet d’usage de l’IA.
+          </p>
+        </article>
+        <article class="mini-card">
+          <p class="kicker">Construction et hébergement</p>
+          <h3>Astro, GitHub, Vercel</h3>
+          <p>
+            Astro, un générateur de site statique (SSG), fabrique les pages. Le code est publié sur GitHub et le site est en
+            ligne sur Vercel.
+            {SITE.repoUrl && <> <a href={SITE.repoUrl}>Voir le code source</a>.</>}
+          </p>
+        </article>
+        <article class="mini-card">
+          <p class="kicker">Images et polices</p>
+          <h3>Tout est fait maison</h3>
+          <p>
+            Les illustrations et schémas sont dessinés en SVG pour ce site : aucune image n’est empruntée. Polices sous
+            licence libre SIL OFL : Bricolage Grotesque, Atkinson Hyperlegible (Braille Institute) et JetBrains Mono, hébergées
+            avec le site.
+          </p>
+        </article>
+        <article class="mini-card">
+          <p class="kicker">Outil en direct</p>
+          <h3>Le résolveur dns.google</h3>
+          <p>
+            L’outil « Interrogez un vrai serveur DNS » du sujet 3 envoie le nom tapé au résolveur public de Google. Aucune autre
+            page n’envoie de données : pas de cookie, pas de mesure d’audience.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="accessibilite">
+    <div class="wrap">
+      <div class="band">
+        <p class="kicker">Accessibilité</p>
+        <h2 id="accessibilite">Un site pensé pour tout le monde</h2>
+        <p style="max-width:62ch;margin-top:0.8rem">
+          L’accessibilité est l’un des deux mots de mon oral. Ce site essaie d’appliquer ce qu’il explique, en suivant les
+          principes des WCAG 2.2 du W3C.
+        </p>
+        <ul class="a11y">
+          <li><strong>Clavier.</strong> Tout se fait avec Tab, Entrée et les flèches. Un lien « Aller au contenu » apparaît au premier Tab, et le focus est toujours visible (contour jaune).</li>
+          <li><strong>Lecteurs d’écran.</strong> Langue déclarée, titres hiérarchisés, textes alternatifs sur chaque illustration, résultats des outils annoncés.</li>
+          <li><strong>Lisibilité.</strong> Police Atkinson Hyperlegible, conçue pour les personnes malvoyantes, et contrastes d’au moins 4,5 pour 1 sur le texte.</li>
+          <li><strong>Préférences.</strong> Thème sombre automatique ou au choix, et animations coupées si votre système demande de réduire les mouvements.</li>
+          <li><strong>Couleurs.</strong> Aucune information n’est donnée par la couleur seule : chaque élément coloré a aussi un numéro, un mot ou une icône.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="fabrication">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Les coulisses</p>
+        <h2 id="fabrication">Comment ce site est fabriqué</h2>
+        <p>
+          C’est le principe d’un SSG, l’autre mot de mon oral : les pages sont fabriquées une seule fois, au moment du
+          « build », puis envoyées telles quelles à chaque visiteur.
+        </p>
+      </div>
+      <ol class="steps">
+        <li><strong>J’écris</strong><span>Les textes, les données (dates, sources) et les composants, dans des fichiers.</span></li>
+        <li><strong>Astro fabrique</strong><span>La commande <code>npm run build</code> assemble tout en pages HTML, CSS et JavaScript.</span></li>
+        <li><strong>GitHub garde</strong><span>Le code est envoyé sur GitHub : chaque modification est conservée.</span></li>
+        <li class="is-gold"><strong>Vercel publie</strong><span>Vercel refait le build et met les pages en ligne, en HTTPS.</span></li>
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .groups {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .group {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--card);
+    overflow: hidden;
+  }
+  .group summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.3rem;
+    cursor: pointer;
+    list-style: none;
+    min-height: 56px;
+  }
+  .group summary::-webkit-details-marker {
+    display: none;
+  }
+  .group summary::after {
+    content: '+';
+    font: 700 1.5rem/1 var(--font-mono);
+    color: var(--blue);
+    margin-left: 0.5rem;
+  }
+  .group[open] summary::after {
+    content: '−';
+  }
+  .group__title {
+    font: 800 1.2rem/1.25 var(--font-display);
+    letter-spacing: -0.01em;
+    margin-right: auto;
+  }
+  .group__body {
+    padding: 0 1.3rem 1.3rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .a11y {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  .a11y li {
+    color: var(--on-navy-muted);
+    border-top: 2px solid var(--navy-line);
+    padding-top: 0.8rem;
+  }
+  .a11y strong {
+    color: var(--gold);
+  }
+</style>

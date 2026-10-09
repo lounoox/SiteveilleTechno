@@ -1,0 +1,21 @@
+---
+// Cadre commun des éléments interactifs (« À vous de jouer »).
+interface Props {
+  id: string;
+  title: string;
+  kicker?: string;
+}
+const { id, title, kicker = 'À vous de jouer' } = Astro.props;
+---
+<section class="lab reveal" aria-labelledby={`${id}-title`} id={id}>
+  <div class="lab__head">
+    <div>
+      <p class="kicker">{kicker}</p>
+      <h3 id={`${id}-title`}>{title}</h3>
+    </div>
+    <slot name="head" />
+  </div>
+  <div class="lab__body">
+    <slot />
+  </div>
+</section>

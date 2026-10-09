@@ -1,0 +1,61 @@
+---
+// Gabarit commun aux cinq pages sujets : même structure partout.
+import Base from './Base.astro';
+import Parcours from '../components/Parcours.astro';
+import PrevNext from '../components/PrevNext.astro';
+import SourceList from '../components/SourceList.astro';
+import { SUBJECTS } from '../config';
+
+interface Props {
+  n: number;
+  description: string;
+  lead: string;
+  sources: string[];
+}
+const { n, description, lead, sources } = Astro.props;
+const subject = SUBJECTS.find((s) => s.n === n)!;
+---
+<Base title={subject.title} description={description}>
+  <section class="subject-hero">
+    <div class="wrap">
+      <Parcours current={n} />
+      <div class="subject-hero__grid">
+        <div class="subject-hero__text">
+          <p class="kicker">Sujet {n} sur 5 · {subject.theme}</p>
+          <h1>{subject.title}</h1>
+          <p class="lead">{lead}</p>
+          <slot name="definition" />
+        </div>
+        <slot name="illustration" />
+      </div>
+    </div>
+  </section>
+
+  <slot />
+
+  <section class="section" aria-labelledby="a-retenir">
+    <div class="wrap retenir reveal">
+      <p class="kicker">En résumé</p>
+      <h2 id="a-retenir">À retenir</h2>
+      <slot name="retenir" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="sources-page">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Vérifié dans deux sources</p>
+        <h2 id="sources-page">Les sources de cette page</h2>
+        <p>
+          Chaque date, chiffre ou nom de cette page renvoie, par un petit numéro, à au moins deux sources de cette liste.
+          La liste complète du site est sur la <a href="/sources/">page Sources</a>.
+        </p>
+      </div>
+      <SourceList list={sources} />
+    </div>
+  </section>
+
+  <div class="wrap">
+    <PrevNext current={n} />
+  </div>
+</Base>

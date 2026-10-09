@@ -1,0 +1,77 @@
+---
+// Le cornet de frites du support oral : les frites forment un graphique en barres.
+interface Props {
+  class?: string;
+  label?: string; // texte alternatif ; sans label, le logo est décoratif
+  animated?: boolean;
+  outline?: boolean; // contour doré des frites (version sur fond clair)
+}
+const { class: className = '', label, animated = false, outline = false } = Astro.props;
+const bars = [
+  { x: 74, y: 170, h: 190 },
+  { x: 144, y: 110, h: 250 },
+  { x: 214, y: 200, h: 160 },
+  { x: 284, y: 60, h: 300 },
+  { x: 354, y: 140, h: 220 },
+  { x: 424, y: 95, h: 265 },
+];
+---
+<svg
+  class:list={['logo', className, { 'logo--animated': animated }]}
+  viewBox="30 50 492 590"
+  xmlns="http://www.w3.org/2000/svg"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <g class="logo__fries">
+    {bars.map((b, i) => (
+      <rect
+        x={b.x}
+        y={b.y}
+        width="54"
+        height={b.h}
+        rx="12"
+        fill="#F4B400"
+        stroke={outline ? '#B98600' : 'none'}
+        stroke-width={outline ? 6 : 0}
+        style={`--i:${i}`}
+      />
+    ))}
+  </g>
+  <polygon points="40,300 512,300 276,630" fill="#3D5FE6" />
+  <polygon points="150,340 196,340 276,630" fill="#3352D6" />
+  <polygon points="356,340 402,340 276,630" fill="#3352D6" />
+  <polygon points="40,300 512,300 484,340 68,340" fill="#6F86E0" />
+</svg>
+
+<style>
+  .logo rect {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .logo--animated rect {
+      animation: grow 0.9s cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+      animation-delay: calc(0.25s + var(--i) * 0.09s);
+    }
+    .logo--animated:hover rect {
+      animation: wiggle 0.6s ease-in-out;
+      animation-delay: calc(var(--i) * 0.05s);
+    }
+  }
+  @keyframes grow {
+    from {
+      transform: scaleY(0.05);
+    }
+  }
+  @keyframes wiggle {
+    40% {
+      transform: scaleY(0.82);
+    }
+    70% {
+      transform: scaleY(1.06);
+    }
+  }
+</style>
