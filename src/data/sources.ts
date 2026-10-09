@@ -92,13 +92,6 @@ export const SOURCES: Record<string, Source> = {
     lang: 'en',
     topics: ['timeline'],
   },
-  'wikipedia-cailliau': {
-    publisher: 'Wikipédia',
-    title: 'Robert Cailliau',
-    url: 'https://fr.wikipedia.org/wiki/Robert_Cailliau',
-    lang: 'fr',
-    topics: ['timeline'],
-  },
   'cern-timeline-1993': {
     publisher: 'CERN',
     title: 'CERN puts the World Wide Web in the public domain (frise historique du CERN)',
@@ -114,26 +107,12 @@ export const SOURCES: Record<string, Source> = {
     lang: 'en',
     topics: ['timeline', 'standards'],
   },
-  'wikipedia-js': {
-    publisher: 'Wikipédia',
-    title: 'JavaScript',
-    url: 'https://fr.wikipedia.org/wiki/JavaScript',
-    lang: 'fr',
-    topics: ['timeline', 'standards'],
-  },
   'w3c-html5-pr': {
     publisher: 'W3C',
     title: 'Open Web Platform Milestone Achieved with HTML5 Recommendation (communiqué)',
     url: 'https://lists.w3.org/Archives/Public/w3c-news/2014OctDec/0001.html',
     date: '28 octobre 2014',
     lang: 'en',
-    topics: ['timeline', 'standards'],
-  },
-  'wikipedia-html5': {
-    publisher: 'Wikipédia',
-    title: 'HTML5',
-    url: 'https://fr.wikipedia.org/wiki/HTML5',
-    lang: 'fr',
     topics: ['timeline', 'standards'],
   },
   'statcounter-2016': {
@@ -237,13 +216,6 @@ export const SOURCES: Record<string, Source> = {
     date: 'juin 2022',
     lang: 'en',
     topics: ['url', 'securite'],
-  },
-  'wikipedia-url': {
-    publisher: 'Wikipédia',
-    title: 'Uniform Resource Locator',
-    url: 'https://fr.wikipedia.org/wiki/Uniform_Resource_Locator',
-    lang: 'fr',
-    topics: ['url'],
   },
   'whatwg-url': {
     publisher: 'WHATWG',
@@ -400,13 +372,6 @@ export const SOURCES: Record<string, Source> = {
     lang: 'en',
     topics: ['standards'],
   },
-  'wikipedia-w3c-rec': {
-    publisher: 'Wikipédia',
-    title: 'Recommandation du W3C',
-    url: 'https://fr.wikipedia.org/wiki/Recommandation_du_W3C',
-    lang: 'fr',
-    topics: ['standards'],
-  },
   'whatwg-faq': {
     publisher: 'WHATWG',
     title: 'FAQ',
@@ -449,13 +414,6 @@ export const SOURCES: Record<string, Source> = {
     title: 'A brief history of CSS until 2016',
     url: 'https://www.w3.org/Style/CSS20/history.html',
     lang: 'en',
-    topics: ['standards'],
-  },
-  'wikipedia-css': {
-    publisher: 'Wikipédia',
-    title: 'Feuilles de style en cascade',
-    url: 'https://fr.wikipedia.org/wiki/Feuilles_de_style_en_cascade',
-    lang: 'fr',
     topics: ['standards'],
   },
   'mdn-html': {

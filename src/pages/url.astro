@@ -5,7 +5,7 @@ import Exemple from '../components/Exemple.astro';
 import UrlLab from '../components/interactive/UrlLab.astro';
 import AdressePostale from '../components/illus/AdressePostale.astro';
 
-const S = ['mdn-url-fr', 'mdn-https', 'rfc3986', 'rfc1738', 'wikipedia-url', 'whatwg-url', 'rfc9110', 'mdn-url-en', 'mdn-percent'];
+const S = ['mdn-url-fr', 'mdn-https', 'rfc3986', 'rfc1738', 'whatwg-url', 'rfc9110', 'mdn-url-en', 'mdn-percent'];
 ---
 <Subject
   n={2}
@@ -39,10 +39,10 @@ const S = ['mdn-url-fr', 'mdn-https', 'rfc3986', 'rfc1738', 'wikipedia-url', 'wh
       <p>
         Pour que n’importe quelle page puisse pointer vers n’importe quelle autre, le Web a besoin d’adresses écrites de la
         même façon partout. Le format des URL est décrit dès décembre 1994 dans le RFC 1738, un document de l’IETF signé par
-        Tim Berners-Lee, Larry Masinter et Mark McCahill<Cite list={S} ids={['rfc1738', 'wikipedia-url']} />.
+        Tim Berners-Lee, Larry Masinter et Mark McCahill<Cite list={S} ids={['rfc1738']} />.
       </p>
       <p>
-        Aujourd’hui, la règle de référence est le RFC 3986, publié en 2005<Cite list={S} ids={['rfc3986', 'wikipedia-url']} />,
+        Aujourd’hui, la règle de référence est le RFC 3986, publié en 2005<Cite list={S} ids={['rfc3986']} />,
         et les navigateurs appliquent le <span lang="en">URL Standard</span> du WHATWG<Cite list={S} ids={['whatwg-url', 'mdn-url-en']} />.
         C’est ce standard qui décide, par exemple, comment votre navigateur comprend ce que vous tapez dans la barre d’adresse.
       </p>

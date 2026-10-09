@@ -129,7 +129,7 @@ export const EVENTS: Event[] = [
     cat: 'standards',
     title: 'JavaScript créé en dix jours',
     text: 'Chez Netscape, Brendan Eich écrit en dix jours la première version du langage qui rend les pages interactives. Il sera ensuite standardisé par Ecma International sous le nom ECMAScript.',
-    sources: ['oreilly-js', 'wikipedia-js'],
+    sources: ['oreilly-js'],
   },
   {
     id: 'html5',
@@ -139,7 +139,7 @@ export const EVENTS: Event[] = [
     cat: 'standards',
     title: 'HTML5 devient une recommandation du W3C',
     text: "La cinquième grande version du langage des pages Web est officiellement publiée. Vidéo et audio s'intègrent dans la page sans module externe.",
-    sources: ['w3c-html5-pr', 'wikipedia-html5'],
+    sources: ['w3c-html5-pr'],
   },
   {
     id: 'mobile',
